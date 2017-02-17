@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tablator.Infrastructure
+namespace Tablator.DomainModel
 {
     public class Class1
     {
