@@ -1,0 +1,2 @@
+# core
+Tablator's core
