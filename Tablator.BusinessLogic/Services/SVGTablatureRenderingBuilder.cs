@@ -1,10 +1,407 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Tablator.BusinessLogic.Services
+﻿namespace Tablator.BusinessLogic.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using Tablator.BusinessModel;
+    using Tablator.Infrastructure.Enumerations;
+    using Tablator.Infrastructure.Models;
+    using System.Linq;
+
     internal sealed class SVGTablatureRenderingBuilderService : IFormatTablatureRenderingBuilderService
     {
+        private TablatureRenderingOptions Options { get; }
+
+        public int cursorWith { get; private set; } = 0;
+
+        public int cursorHeight { get; private set; } = 20;
+
+        public int svgHeight { get; private set; } = 20;
+
+        private Tablature Tablature { get; }
+
+        public string SVGContent { get; private set; } = string.Empty;
+
+        public SVGTablatureRenderingBuilderService(TablatureRenderingOptions options, Tablature tab)
+        {
+            Options = options;
+            Tablature = tab;
+        }
+
+        public bool TryBuild(out TabGenerationStatus status)
+        {
+            status = TabGenerationStatus.Failed;
+
+            try
+            {
+                // en-tête du document
+
+                if (!string.IsNullOrWhiteSpace(Tablature.SongName))
+                {
+                    cursorHeight += 8;
+                    svgHeight += 8;
+                    SVGContent += "<text x=\"50%\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"30\" text-anchor=\"middle\">" + Tablature.SongName + "</text>";
+                    cursorHeight += 30;
+                    svgHeight += 30;
+                }
+
+                if (!string.IsNullOrWhiteSpace(Tablature.ArtistName))
+                {
+                    cursorHeight += 5;
+                    svgHeight += 5;
+                    SVGContent += "<text x=\"50%\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"15\" text-anchor=\"middle\" font-style=\"italic\">" + Tablature.ArtistName + "</text>";
+                    cursorHeight += 15;
+                    svgHeight += 15;
+                }
+
+                if (Tablature.Capodastre > 0)
+                {
+                    cursorHeight += 5;
+                    svgHeight += 5;
+                    SVGContent += "<text x=\"0\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"12\" text-anchor=\"left\">Capodastre: " + Tablature.Capodastre + "</text>";
+                    cursorHeight += 15;
+                    svgHeight += 15;
+                }
+
+                if (!string.IsNullOrWhiteSpace(Tablature.Tuning))
+                {
+                    cursorHeight += 5;
+                    svgHeight += 5;
+                    SVGContent += "<text x=\"0\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"12\" text-anchor=\"left\">Tuning: " + Tablature.Tuning + "</text>";
+                    cursorHeight += 15;
+                    svgHeight += 15;
+                }
+
+                if (Tablature.Tempo > 0)
+                {
+                    cursorHeight += 5;
+                    svgHeight += 5;
+                    SVGContent += "<text x=\"0\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"12\" text-anchor=\"left\">Tempo: " + Tablature.Tempo + "</text>";
+                    cursorHeight += 15;
+                    svgHeight += 15;
+                }
+
+                if (Options.DisplayEnchainement && Tablature.Enchainement != null && Tablature.Enchainement.Count > 0)
+                {
+                    cursorHeight += 5;
+                    svgHeight += 5;
+
+                    if (!Options.AffichageEnchainementDetaille.HasValue || !Options.AffichageEnchainementDetaille.Value)
+                    {
+                        // Affichage simple
+                        SVGContent += "<text x=\"0\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"12\" text-anchor=\"left\">Enchaînement: ";
+                        foreach (EnchainementItem ei in Tablature.Enchainement)
+                        {
+                            SVGContent += "(" + Tablature.GetPartName(ei.PartieId, Options.Culture) + " x" + ei.Repeat + ") ";
+                        }
+                        SVGContent += "</text>";
+                    }
+                    else
+                    {
+                        // Affichage détaillé
+                        SVGContent += "<text x=\"0\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"12\" text-anchor=\"left\">Enchaînement:</text>";
+                        foreach (EnchainementItem ei in Tablature.Enchainement)
+                        {
+                            cursorHeight += 15;
+                            svgHeight += 15;
+                            SVGContent += "<text x=\"20\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"12\" text-anchor=\"left\">- " + Tablature.GetPartName(ei.PartieId, Options.Culture) + " x" + ei.Repeat + "</text>";
+                        }
+                    }
+
+                    cursorHeight += 15;
+                    svgHeight += 15;
+                }
+
+                // Accord d'en-tête
+
+                if (Options.DisplayChordsHeader && Tablature.Accords != null && Tablature.Accords.Count > 0)
+                {
+                    GuitarChordDrawerOptions chordOptions = new Controllers.GuitarChordDrawerOptions();
+                    GuitarChordDrawer chordDrawer = new GuitarChordDrawer(options: chordOptions);
+
+                    cursorWith = 0;
+                    cursorHeight += 10;
+                    svgHeight += 10;
+
+                    //for (int i = 0; i < Tablature.Accords.Count; i++)
+                    //{
+                    //    string chordSVG = string.Empty;
+
+                    //    if (chordDrawer.DrawChord(Tablature.Accords[i], out chordSVG))
+                    //        SVGContent += chordSVG;
+
+                    //    chordSVG = null;
+                    //}
+
+                    int i = 0;
+                    foreach (string s in Tablature.Accords)
+                    {
+                        cursorWith += 5;
+
+                        if (i == 0)
+                        {
+                            // New line
+                        }
+
+                        string chordSVG = string.Empty;
+
+                        if (chordDrawer.DrawChord(Tablature.Accords[i], out chordSVG, cursorWidth: cursorWith, cursorHeight: cursorHeight))
+                            SVGContent += chordSVG;
+
+                        cursorWith += chordOptions.Width + 10;
+
+                        chordSVG = null;
+
+                        //if (i >= (Options.Width - (10)) / chordOptions.Width)
+                        //{
+                        //    // New line
+
+                        //    i = 0;
+
+                        //    cursorHeight += 5 + chordOptions.Height;
+                        //    svgHeight += 5 + chordOptions.Height;
+                        //}
+                        //else
+                        //    i++;
+
+                        if ((Options.Width - cursorWith) < chordOptions.Width + 10)
+                        {
+                            // New Line
+
+                            i = 0;
+                            cursorHeight += chordOptions.Height;
+                            svgHeight += chordOptions.Height;
+                            cursorWith = 0;
+                        }
+                        else
+                        {
+                            i++;
+                        }
+                    }
+
+                    // On passe la ligne en cours
+
+                    cursorHeight += chordOptions.Height;
+                    svgHeight += chordOptions.Height;
+                    cursorWith = 0;
+
+                    chordOptions = null;
+                    chordDrawer = null;
+                }
+
+                // contenu tab
+
+                cursorWith = 0;
+
+                foreach (Partie part in Tablature.Parties)
+                {
+                    if (!string.IsNullOrWhiteSpace(Tablature.GetPartName(part.Id,Options.Culture)))
+                    {
+                        cursorHeight += 30;
+                        SVGContent += "<text x=\"0\"  y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"15\">" + Tablature.GetPartName(part.Id, Options.Culture) + "</text>";
+                        cursorHeight += 15;
+                        cursorHeight += 5;
+                        svgHeight += 50;
+                    }
+
+                    // On crée une ligne vide de tab
+                    CreateNewLine();
+
+                    // Et on mets les notes
+
+                    int iMesures = 0;
+
+                    // Fonctionne mais avec des lignes verticales en trop (car plus assez d'espace après pour caler des temps, donc moche)
+                    //foreach (Mesure mes in part.Mesures)
+                    //{
+                    //    iMesures++;
+
+                    //    foreach (Temps tmp in mes.Temps)
+                    //    {
+                    //        foreach (Son s in tmp.Sons)
+                    //        {
+                    //            if (cursorWith >= (Options.Width - 20)) // 20 = largeur d'une note à peu près, avec marges côtés
+                    //            {
+                    //                cursorHeight += Options.StringSpacing * 6 + 20;
+                    //                CreateNewLine();
+                    //            }
+
+                    //            if (s.Type == TypeSonEnum.Note)
+                    //                CreateNote(s.Corde, s.Position);
+                    //            else if (s.Type == TypeSonEnum.Accord)
+                    //                CreateChord(s.Chord, s.SensGrattageCode);
+                    //        }
+                    //    }
+
+                    //    if (iMesures < part.Mesures.Count)
+                    //        CreateVerticalLine();
+                    //}
+
+
+                    for (int i = 0; i < part.Mesures.Count; i++)
+                    {
+                        iMesures++;
+
+                        foreach (Temps tmp in part.Mesures[i].Temps)
+                        {
+                            foreach (Son s in tmp.Sons)
+                            {
+                                //if (cursorWith >= (Options.Width - 20)) // 20 = largeur d'une note à peu près, avec marges côtés
+                                //{
+                                //    cursorHeight += Options.StringSpacing * 6 + 20;
+                                //    CreateNewLine();
+                                //}
+
+                                if (s.Type == TypeSonEnum.Note)
+                                    CreateNote(s.Corde, s.Position);
+                                else if (s.Type == TypeSonEnum.Accord)
+                                    CreateChord(s.Chord, s.SensGrattageCode);
+                            }
+                        }
+
+                        if (iMesures < part.Mesures.Count)
+                        {
+                            int nbNotesNextMesure = 0;
+                            if (part.Mesures[i + 1] != null && part.Mesures[i + 1].Temps != null && part.Mesures[i + 1].Temps.Count > 0)
+                            {
+                                part.Mesures[i + 1].Temps.ForEach(delegate (Temps t)
+                                {
+                                    nbNotesNextMesure += t.Sons != null ? t.Sons.Count() : 0;
+                                });
+                            }
+
+                            if (cursorWith < (Options.Width - (20 + nbNotesNextMesure * 20)))
+                                CreateVerticalLine();
+                            else
+                            {
+                                cursorHeight += Options.StringSpacing * 6 + 20;
+                                CreateNewLine();
+                            }
+                        }
+                    }
+
+                    // on mets à jour la hauteur du svg
+
+                    cursorHeight += Options.StringSpacing * 5;
+                    svgHeight += cursorHeight;
+                }
+
+                // Response
+
+                SVGContent = "<svg width=\"" + Options.Width + "\" height=\"" + (svgHeight + 20) + "\">" + SVGContent + "</svg>";
+
+                status = TabGenerationStatus.Succeed;
+                return true;
+            }
+            catch (Exception)
+            {
+                status = TabGenerationStatus.Failed;
+                throw;
+            }
+            finally
+            {
+
+            }
+        }
+
+        private void CreateChord(string chord, int? sensGrattageCode)
+        {
+            string[] chordComp = chord.Split(new char[] { '|' }, StringSplitOptions.None);
+            if (chordComp.Length != 6)
+                throw new Exception();
+
+            //bool downDirection = chordComp[6] == "d" ? true : false;
+
+            chordComp = chordComp.Reverse().ToArray();
+
+            int yPosi = cursorHeight;
+            cursorWith += 10;
+
+            if (sensGrattageCode.HasValue)
+            {
+                if ((SensGrattageCordes)sensGrattageCode.Value == SensGrattageCordes.Down)
+                {
+                    int startPosi = yPosi;
+                    int endPosi = yPosi;
+
+                    List<int> cordesJouees = new List<int>();
+                    for (int i = 0; i < 5; i++)
+                    {
+                        if (!string.IsNullOrWhiteSpace(chordComp[i]))
+                            cordesJouees.Add(i);
+                    }
+
+                    startPosi += cordesJouees.Max() * 20;
+                    endPosi += cordesJouees.Min() * 20;
+
+                    SVGContent += "<line x1=\"" + cursorWith + "\" y1=\"" + (startPosi + 8) + "\" x2=\"" + cursorWith + "\" y2=\"" + (endPosi - 8) + "\" stroke-width=\"1\" stroke=\"black\"/>";
+                    SVGContent += "<line x1=\"" + cursorWith + "\" y1=\"" + (endPosi - 8) + "\" x2=\"" + (cursorWith - 4) + "\" y2=\"" + (endPosi + 6) + "\" stroke-width=\"1\" stroke=\"black\"/>";
+                    SVGContent += "<line x1=\"" + cursorWith + "\" y1=\"" + (endPosi - 8) + "\" x2=\"" + (cursorWith + 4) + "\" y2=\"" + (endPosi + 6) + "\" stroke-width=\"1\" stroke=\"black\"/>";
+                    //cf http://vanseodesign.com/web-design/svg-markers/
+                }
+                else if ((SensGrattageCordes)sensGrattageCode.Value == SensGrattageCordes.Up)
+                {
+
+                }
+
+                cursorWith += 5;
+            }
+
+            for (int i = 0; i < 5; i++)
+            {
+                if (i > 0)
+                    yPosi += 20;
+
+                if (string.IsNullOrWhiteSpace(chordComp[i]))
+                    continue;
+
+                SVGContent += "<circle cx=\"" + (cursorWith + 8) + "\" cy=\"" + yPosi + "\" r=\"8\" stroke=\"rgb(255, 255, 255)\" stroke-width=\"0\" fill=\"rgb(255, 255, 255)\" /><text x=\"" + (cursorWith + 4) + "\" y=\"" + (yPosi + 4) + "\" font-family=\"" + Options.Typeface + "\" font-size=\"15\" fill=\"black\">" + chordComp[i] + "</text>";
+            }
+        }
+
+        private void CreateNote(int corde, int posi)
+        {
+            int yPosi = cursorHeight;
+            yPosi += (6 - corde) * 20;
+            SVGContent += "<circle cx=\"" + (cursorWith + 8) + "\" cy=\"" + yPosi + "\" r=\"8\" stroke=\"rgb(255, 255, 255)\" stroke-width=\"0\" fill=\"rgb(255, 255, 255)\" /><text x=\"" + (cursorWith + 4) + "\" y=\"" + (yPosi + 4) + "\" font-family=\"" + Options.Typeface + "\" font-size=\"15\" fill=\"black\">" + posi + "</text>";
+            cursorWith += 25;
+        }
+
+        private void CreateVerticalLine()
+        {
+            SVGContent += "<line x1=\"" + (cursorWith + 7) + "\" y1=\"" + cursorHeight + "\" x2=\"" + (cursorWith + 7) + "\" y2=\"" + (cursorHeight + (Options.StringSpacing * 5)) + "\" stroke=\"" + Options.StringColor + "\" stroke-width=\"" + Options.StringWidth + "\" fill=\"" + Options.StringColor + "\"></line>";
+            cursorWith += 14;
+        }
+
+        /// <summary>
+        /// On crée une nouvelle ligne vide (cordes + inscription TAB etc, sans aucune note)
+        /// </summary>
+        /// <returns></returns>
+        private void CreateNewLine()
+        {
+            cursorWith = 0;
+
+            // ligne début tab
+
+            SVGContent += "<line x1=\"0\" y1=\"" + cursorHeight + "\" x2=\"0\" y2=\"" + (cursorHeight + (Options.StringSpacing * 5)) + "\" stroke=\"" + Options.StringColor + "\" stroke-width=\"" + Options.StringWidth + "\" fill=\"" + Options.StringColor + "\"></line>";
+
+            // cordes guitare
+
+            for (int i = 0; i < 6; i++)
+                SVGContent += "<line x1=\"0\" y1=\"" + (cursorHeight + (Options.StringSpacing * i)) + "\" x2=\"100%\" y2=\"" + (cursorHeight + (Options.StringSpacing * i)) + "\" stroke=\"" + Options.StringColor + "\" stroke-width=\"" + Options.StringWidth + "\" fill=\"" + Options.StringColor + "\"></line>";
+
+            // inscription "TAB"
+
+            SVGContent += "<text x=\"10\" y=\"" + (cursorHeight + Options.StringSpacing + 15) + "\" text-anchor=\"middle\" font-family=\"" + Options.Typeface + "\" font-size=\"11\" stroke=\"" + Options.StringColor + "\" fill=\"" + Options.StringColor + "\">T</text>";
+            SVGContent += "<text x=\"10\" y=\"" + (cursorHeight + (Options.StringSpacing * 2) + 15) + "\" text-anchor=\"middle\" font-family=\"" + Options.Typeface + "\" font-size=\"11\" stroke=\"" + Options.StringColor + "\" fill=\"" + Options.StringColor + "\">A</text>";
+            SVGContent += "<text x=\"10\" y=\"" + (cursorHeight + (Options.StringSpacing * 3) + 15) + "\" text-anchor=\"middle\" font-family=\"" + Options.Typeface + "\" font-size=\"11\" stroke=\"" + Options.StringColor + "\" fill=\"" + Options.StringColor + "\">B</text>";
+
+            cursorWith += 50; // taille de tab plus un peu d'espace
+
+            // ligne début tab
+
+            SVGContent += "<line x1=\"100%\" y1=\"" + cursorHeight + "\" x2=\"100%\" y2=\"" + (cursorHeight + (Options.StringSpacing * 5)) + "\" stroke=\"" + Options.StringColor + "\" stroke-width=\"" + Options.StringWidth + "\" fill=\"" + Options.StringColor + "\"></line>";
+
+        }
     }
 }
