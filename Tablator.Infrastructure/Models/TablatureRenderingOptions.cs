@@ -8,8 +8,6 @@
 
     public class TablatureRenderingOptions
     {
-        public TablatureOutputFormat OutputFormat { get; }
-
         public CultureInfo Culture { get; } = CultureInfo.CurrentUICulture;
 
         /// <summary>
@@ -46,9 +44,8 @@
 
         public string Typeface { get; set; } = "Verdana";
 
-        public TablatureRenderingOptions(TablatureOutputFormat outputFormat)
+        public TablatureRenderingOptions()
         {
-            OutputFormat = outputFormat;
         }
     }
 }

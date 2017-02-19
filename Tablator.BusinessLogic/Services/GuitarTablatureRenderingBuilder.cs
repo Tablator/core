@@ -8,28 +8,39 @@
     using Tablator.Infrastructure.Models;
     using System.Linq;
 
-    internal sealed class SVGTablatureRenderingBuilderService : IFormatTablatureRenderingBuilderService
+    public class GuitarTablatureRenderingBuilderService : IGuitarTablatureRenderingBuilderService
     {
-        private TablatureRenderingOptions Options { get; }
+        private TablatureRenderingOptions Options { get; set; }
 
-        public int cursorWith { get; private set; } = 0;
+        private int cursorWith { get; set; } = 0;
 
-        public int cursorHeight { get; private set; } = 20;
+        private int cursorHeight { get; set; } = 20;
 
-        public int svgHeight { get; private set; } = 20;
+        private int svgHeight { get; set; } = 20;
 
-        private Tablature Tablature { get; }
+        private Tablature Tablature { get; set; }
 
-        public string SVGContent { get; private set; } = string.Empty;
+        private string SVGContent { get; set; } = string.Empty;
 
-        public SVGTablatureRenderingBuilderService(TablatureRenderingOptions options, Tablature tab)
+        private IGuitarChordRenderingBuilderService GuitarChordRenderingBuilderService { get; }
+
+        public GuitarTablatureRenderingBuilderService(
+            IGuitarChordRenderingBuilderService guitarChordRenderingBuilderService)
+        {
+            GuitarChordRenderingBuilderService = guitarChordRenderingBuilderService;
+        }
+
+        public void Init(TablatureRenderingOptions options, Tablature tab)
         {
             Options = options;
             Tablature = tab;
+
+            GuitarChordRenderingBuilderService.Init(new GuitarChordRenderingOptions());
         }
 
-        public bool TryBuild(out TabGenerationStatus status)
+        public bool TryBuild(out TabGenerationStatus status, out string ret)
         {
+            ret = string.Empty;
             status = TabGenerationStatus.Failed;
 
             try
@@ -116,8 +127,8 @@
 
                 if (Options.DisplayChordsHeader && Tablature.Accords != null && Tablature.Accords.Count > 0)
                 {
-                    GuitarChordDrawerOptions chordOptions = new Controllers.GuitarChordDrawerOptions();
-                    GuitarChordDrawer chordDrawer = new GuitarChordDrawer(options: chordOptions);
+                    //GuitarChordDrawerOptions chordOptions = new Controllers.GuitarChordDrawerOptions();
+                    //GuitarChordDrawer chordDrawer = new GuitarChordDrawer(options: chordOptions);
 
                     cursorWith = 0;
                     cursorHeight += 10;
@@ -145,10 +156,10 @@
 
                         string chordSVG = string.Empty;
 
-                        if (chordDrawer.DrawChord(Tablature.Accords[i], out chordSVG, cursorWidth: cursorWith, cursorHeight: cursorHeight))
+                        if (GuitarChordRenderingBuilderService.DrawChord(Tablature.Accords[i], out chordSVG, cursorWidth: cursorWith, cursorHeight: cursorHeight))
                             SVGContent += chordSVG;
 
-                        cursorWith += chordOptions.Width + 10;
+                        cursorWith += GuitarChordRenderingBuilderService.GetWidth() + 10;
 
                         chordSVG = null;
 
@@ -164,13 +175,13 @@
                         //else
                         //    i++;
 
-                        if ((Options.Width - cursorWith) < chordOptions.Width + 10)
+                        if ((Options.Width - cursorWith) < GuitarChordRenderingBuilderService.GetWidth() + 10)
                         {
                             // New Line
 
                             i = 0;
-                            cursorHeight += chordOptions.Height;
-                            svgHeight += chordOptions.Height;
+                            cursorHeight += GuitarChordRenderingBuilderService.GetHeight();
+                            svgHeight += GuitarChordRenderingBuilderService.GetHeight();
                             cursorWith = 0;
                         }
                         else
@@ -181,12 +192,9 @@
 
                     // On passe la ligne en cours
 
-                    cursorHeight += chordOptions.Height;
-                    svgHeight += chordOptions.Height;
+                    cursorHeight += GuitarChordRenderingBuilderService.GetHeight();
+                    svgHeight += GuitarChordRenderingBuilderService.GetHeight();
                     cursorWith = 0;
-
-                    chordOptions = null;
-                    chordDrawer = null;
                 }
 
                 // contenu tab
@@ -195,7 +203,7 @@
 
                 foreach (Partie part in Tablature.Parties)
                 {
-                    if (!string.IsNullOrWhiteSpace(Tablature.GetPartName(part.Id,Options.Culture)))
+                    if (!string.IsNullOrWhiteSpace(Tablature.GetPartName(part.Id, Options.Culture)))
                     {
                         cursorHeight += 30;
                         SVGContent += "<text x=\"0\"  y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"15\">" + Tablature.GetPartName(part.Id, Options.Culture) + "</text>";
@@ -291,16 +299,19 @@
                 SVGContent = "<svg width=\"" + Options.Width + "\" height=\"" + (svgHeight + 20) + "\">" + SVGContent + "</svg>";
 
                 status = TabGenerationStatus.Succeed;
+                ret = SVGContent;
+
                 return true;
             }
             catch (Exception)
             {
                 status = TabGenerationStatus.Failed;
+                ret = null;
                 throw;
             }
             finally
             {
-
+                SVGContent = null;
             }
         }
 
