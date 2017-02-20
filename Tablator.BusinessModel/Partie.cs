@@ -28,7 +28,20 @@
 
                 List<string> ret = new List<string>();
 
-                Mesures.Select(x => x.ChordList).ToList().ForEach(delegate (List<string> s)
+                //Mesures.Select(x => x.ChordList).ToList().ForEach(delegate (List<string> s)
+                //{
+                //    s.ForEach(delegate (string s1)
+                //    {
+                //        if (!ret.Contains(s1))
+                //            ret.Add(s1);
+                //    });
+                //});
+
+                List<MesureInstrument> ins = new List<MesureInstrument>();
+                var _ins = Mesures.Select(m => m.Instruments);
+                foreach (List<MesureInstrument> __ins in _ins)
+                    ins.AddRange(__ins);
+                ins.Select(x => x.ChordList).ToList().ForEach(delegate (List<string> s)
                 {
                     s.ForEach(delegate (string s1)
                     {
