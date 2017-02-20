@@ -79,24 +79,7 @@
                         AddFingersPositions(GuitarChordEnum.Am.GetDisplayDescription(), cursorWidth, cursorHeight);
                         break;
                     default:
-                        // Fonctionne mais statique
-
-                        // Capo
-                        // Finger positions
-                        //if (Options.DisplayFretNumberInFingerPositions)
-                        //    SVGContent += "<g><circle cx=\"" + (cursorWidth + 66) + "\" cy=\"" + (cursorHeight + 40) + "\" r=\"8\" stroke=\"" + Options.FingerPositionBackgroundColor + "\" stroke-width=\"0\" fill=\"" + Options.FingerPositionBackgroundColor + "\" /><text x=\"" + (cursorWidth + 66) + "\" y=\"" + (cursorHeight + 44) + "\" font-family=\"" + Options.Typeface + "\" font-size=\"12\" fill=\"" + Options.FingerPositionTextColor + "\" text-anchor=\"middle\">1</text></g>";
-                        //else
-                        //    SVGContent += "<circle cx=\"" + (cursorWidth + 66) + "\" cy=\"" + (cursorHeight + 40) + "\" r=\"8\" stroke=\"" + Options.FingerPositionBackgroundColor + "\" stroke-width=\"0\" fill=\"" + Options.FingerPositionBackgroundColor + "\" />";
-                        //SVGContent += "<g><circle cx=\"" + (cursorWidth + 45) + "\" cy=\"" + (cursorHeight + 70) + "\" r=\"8\" stroke=\"" + Options.FingerPositionBackgroundColor + "\" stroke-width=\"0\" fill =\"" + Options.FingerPositionBackgroundColor + "\" /><text x=\"" + (cursorWidth + 45) + "\" y=\"" + (cursorHeight + 74) + "\" font-family=\"" + Options.Typeface + "\" font-size=\"12\" fill=\"" + Options.FingerPositionTextColor + "\" text-anchor=\"middle\">2</text></g>";
-                        //SVGContent += "<g><circle cx=\"" + (cursorWidth + 25) + "\" cy=\"" + (cursorHeight + 70) + "\" r=\"8\" stroke=\"" + Options.FingerPositionBackgroundColor + "\" stroke-width=\"0\" fill=\"" + Options.FingerPositionBackgroundColor + "\" /><text x=\"" + (cursorWidth + 25) + "\" y=\"" + (cursorHeight + 74) + "\" font-family=\"" + Options.Typeface + "\" font-size=\"12\" fill=\"" + Options.FingerPositionTextColor + "\" text-anchor=\"middle\">2</text></g>";
-                        //// Free strings
-                        //SVGContent += "<circle cx=\"" + (cursorWidth + 85) + "\" cy=\"" + (cursorHeight + 15) + "\" r=\"5\" stroke=\"" + Options.FingerPositionBackgroundColor + "\" stroke-width=\"1\" fill=\"" + Options.PlayedFreeStringColor + "\" />";
-                        //SVGContent += "<circle cx=\"" + (cursorWidth + 105) + "\" cy=\"" + (cursorHeight + 15) + "\" r=\"5\" stroke=\"" + Options.FingerPositionBackgroundColor + "\" stroke-width=\"1\" fill=\"" + Options.PlayedFreeStringColor + "\" />";
-                        //SVGContent += "<text x=\"" + (cursorWidth + 2) + "\" y=\"" + (cursorHeight + 17) + "\" font-family=\"" + Options.Typeface + "\" font-size=\"13\" fill =\"" + Options.MutedFreeStringColor + "\" text-anchor=\"start\">x</text>";
-
-                        // Fonctionne et dynamique
                         AddFingersPositions(GuitarChordEnum.A.GetDisplayDescription(), cursorWidth, cursorHeight);
-
                         break;
                         //default:
                         //    // Capo

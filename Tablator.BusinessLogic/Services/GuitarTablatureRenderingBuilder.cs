@@ -127,22 +127,9 @@
 
                 if (Options.DisplayChordsHeader && Tablature.Accords != null && Tablature.Accords.Count > 0)
                 {
-                    //GuitarChordDrawerOptions chordOptions = new Controllers.GuitarChordDrawerOptions();
-                    //GuitarChordDrawer chordDrawer = new GuitarChordDrawer(options: chordOptions);
-
                     cursorWith = 0;
                     cursorHeight += 10;
                     svgHeight += 10;
-
-                    //for (int i = 0; i < Tablature.Accords.Count; i++)
-                    //{
-                    //    string chordSVG = string.Empty;
-
-                    //    if (chordDrawer.DrawChord(Tablature.Accords[i], out chordSVG))
-                    //        SVGContent += chordSVG;
-
-                    //    chordSVG = null;
-                    //}
 
                     int i = 0;
                     foreach (string s in Tablature.Accords)
@@ -162,18 +149,6 @@
                         cursorWith += GuitarChordRenderingBuilderService.GetWidth() + 10;
 
                         chordSVG = null;
-
-                        //if (i >= (Options.Width - (10)) / chordOptions.Width)
-                        //{
-                        //    // New line
-
-                        //    i = 0;
-
-                        //    cursorHeight += 5 + chordOptions.Height;
-                        //    svgHeight += 5 + chordOptions.Height;
-                        //}
-                        //else
-                        //    i++;
 
                         if ((Options.Width - cursorWith) < GuitarChordRenderingBuilderService.GetWidth() + 10)
                         {
@@ -219,33 +194,6 @@
 
                     int iMesures = 0;
 
-                    // Fonctionne mais avec des lignes verticales en trop (car plus assez d'espace après pour caler des temps, donc moche)
-                    //foreach (Mesure mes in part.Mesures)
-                    //{
-                    //    iMesures++;
-
-                    //    foreach (Temps tmp in mes.Temps)
-                    //    {
-                    //        foreach (Son s in tmp.Sons)
-                    //        {
-                    //            if (cursorWith >= (Options.Width - 20)) // 20 = largeur d'une note à peu près, avec marges côtés
-                    //            {
-                    //                cursorHeight += Options.StringSpacing * 6 + 20;
-                    //                CreateNewLine();
-                    //            }
-
-                    //            if (s.Type == TypeSonEnum.Note)
-                    //                CreateNote(s.Corde, s.Position);
-                    //            else if (s.Type == TypeSonEnum.Accord)
-                    //                CreateChord(s.Chord, s.SensGrattageCode);
-                    //        }
-                    //    }
-
-                    //    if (iMesures < part.Mesures.Count)
-                    //        CreateVerticalLine();
-                    //}
-
-
                     for (int i = 0; i < part.Mesures.Count; i++)
                     {
                         iMesures++;
@@ -254,12 +202,6 @@
                         {
                             foreach (Son s in tmp.Sons)
                             {
-                                //if (cursorWith >= (Options.Width - 20)) // 20 = largeur d'une note à peu près, avec marges côtés
-                                //{
-                                //    cursorHeight += Options.StringSpacing * 6 + 20;
-                                //    CreateNewLine();
-                                //}
-
                                 if (s.Type == TypeSonEnum.Note)
                                     CreateNote(s.Corde, s.Position);
                                 else if (s.Type == TypeSonEnum.Accord)
@@ -320,8 +262,6 @@
             string[] chordComp = chord.Split(new char[] { '|' }, StringSplitOptions.None);
             if (chordComp.Length != 6)
                 throw new Exception();
-
-            //bool downDirection = chordComp[6] == "d" ? true : false;
 
             chordComp = chordComp.Reverse().ToArray();
 
