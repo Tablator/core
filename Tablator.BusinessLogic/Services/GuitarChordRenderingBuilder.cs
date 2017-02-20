@@ -87,6 +87,8 @@
                         //    // Free strings
                         //    return false;
                 }
+                //TODO here : remove switch du dessus et aller chercher l'enum dynamiquement
+                
 
                 svg = SVGContent;
                 return true;

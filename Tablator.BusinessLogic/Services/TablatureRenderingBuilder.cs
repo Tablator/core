@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Tablator.BusinessModel;
-using Tablator.Infrastructure.Enumerations;
-using Tablator.Infrastructure.Models;
-
-namespace Tablator.BusinessLogic.Services
+﻿namespace Tablator.BusinessLogic.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using Tablator.BusinessModel;
+    using Tablator.Infrastructure.Enumerations;
+    using Tablator.Infrastructure.Models;
+
     public class TablatureRenderingBuilderService : ITablatureRenderingBuilderService
     {
         private TablatureRenderingOptions Options { get; set; }
@@ -34,7 +34,7 @@ namespace Tablator.BusinessLogic.Services
             Options = options;
             Tablature = tab;
 
-            GuitarTablatureRenderingBuilderService.Init(Options, Tablature);
+            //GuitarTablatureRenderingBuilderService.Init(Options, Tablature);
         }
 
         public bool TryBuild(InstrumentEnum instrument, out TabGenerationStatus status, out string ret)
@@ -44,6 +44,8 @@ namespace Tablator.BusinessLogic.Services
 
             try
             {
+                // Build common part of the document (title, ...)
+
                 if (!string.IsNullOrWhiteSpace(Tablature.SongName))
                 {
                     cursorHeight += 8;
@@ -71,13 +73,47 @@ namespace Tablator.BusinessLogic.Services
                     svgHeight += 15;
                 }
 
-                // Build common part of the document (title, ...)
+                if (Options.DisplayEnchainement && Tablature.Enchainement != null && Tablature.Enchainement.Count > 0)
+                {
+                    cursorHeight += 5;
+                    svgHeight += 5;
 
-                // Implement instruement stuff
+                    if (!Options.AffichageEnchainementDetaille.HasValue || !Options.AffichageEnchainementDetaille.Value)
+                    {
+                        // Affichage simple
+                        SVGContent += "<text x=\"0\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"12\" text-anchor=\"left\">Enchaînement: ";
+                        foreach (EnchainementItem ei in Tablature.Enchainement)
+                        {
+                            SVGContent += "(" + Tablature.GetPartName(ei.PartieId, Options.Culture) + " x" + ei.Repeat + ") ";
+                        }
+                        SVGContent += "</text>";
+                    }
+                    else
+                    {
+                        // Affichage détaillé
+                        SVGContent += "<text x=\"0\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"12\" text-anchor=\"left\">Enchaînement:</text>";
+                        foreach (EnchainementItem ei in Tablature.Enchainement)
+                        {
+                            cursorHeight += 15;
+                            svgHeight += 15;
+                            SVGContent += "<text x=\"20\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"12\" text-anchor=\"left\">- " + Tablature.GetPartName(ei.PartieId, Options.Culture) + " x" + ei.Repeat + "</text>";
+                        }
+                    }
+
+                    cursorHeight += 15;
+                    svgHeight += 15;
+                }
+
+                // Implement instrument stuff
 
                 switch (instrument)
                 {
                     case InstrumentEnum.Guitar:
+
+                        GuitarTablatureRenderingBuilderService.Init(Options, Tablature, cursorWith, cursorHeight);
+                        string _SVGContent = SVGContent;
+                        GuitarTablatureRenderingBuilderService.TryBuild(ref _SVGContent);
+                        SVGContent = _SVGContent;
 
                         break;
                     default:

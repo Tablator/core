@@ -53,6 +53,17 @@
         public InstrumentEnum Instrument => (InstrumentEnum)Code;
 
         [JsonProperty(PropertyName = "settings")]
-        public Dictionary<int, string> Settings { get; set; }
+        public List<InstrumentPartSettingsItem> SettingsEntries { get; set; }
+
+        public Dictionary<int, string> Settings => SettingsEntries.Select(x => new { x.Code, x.Val }).ToDictionary(t => t.Code, t => t.Val);
+    }
+
+    public class InstrumentPartSettingsItem
+    {
+        [JsonProperty(PropertyName = "cod")]
+        public int Code { get; set; }
+
+        [JsonProperty(PropertyName = "val")]
+        public string Val { get; set; }
     }
 }
