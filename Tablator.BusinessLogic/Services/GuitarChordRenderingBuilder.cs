@@ -59,36 +59,36 @@
 
             try
             {
-                switch (chord)
-                {
-                    case "eeer":
-                        // Capo
-                        // Finger positions
-                        // Free strings
-                        return false;
-                    case "C":
-                        AddFingersPositions(GuitarChordEnum.C.GetDisplayDescription(), cursorWidth, cursorHeight);
-                        break;
-                    case "A":
-                        AddFingersPositions(GuitarChordEnum.A.GetDisplayDescription(), cursorWidth, cursorHeight);
-                        break;
-                    case "G":
-                        AddFingersPositions(GuitarChordEnum.G.GetDisplayDescription(), cursorWidth, cursorHeight);
-                        break;
-                    case "Am":
-                        AddFingersPositions(GuitarChordEnum.Am.GetDisplayDescription(), cursorWidth, cursorHeight);
-                        break;
-                    default:
-                        AddFingersPositions(GuitarChordEnum.A.GetDisplayDescription(), cursorWidth, cursorHeight);
-                        break;
-                        //default:
-                        //    // Capo
-                        //    // Finger positions
-                        //    // Free strings
-                        //    return false;
-                }
+                //switch (chord)
+                //{
+                //    case "eeer":
+                //        // Capo
+                //        // Finger positions
+                //        // Free strings
+                //        return false;
+                //    case "C":
+                //        AddFingersPositions(GuitarChordEnum.C.GetDisplayDescription(), cursorWidth, cursorHeight);
+                //        break;
+                //    case "A":
+                //        AddFingersPositions(GuitarChordEnum.A.GetDisplayDescription(), cursorWidth, cursorHeight);
+                //        break;
+                //    case "G":
+                //        AddFingersPositions(GuitarChordEnum.G.GetDisplayDescription(), cursorWidth, cursorHeight);
+                //        break;
+                //    case "Am":
+                //        AddFingersPositions(GuitarChordEnum.Am.GetDisplayDescription(), cursorWidth, cursorHeight);
+                //        break;
+                //    default:
+                //        AddFingersPositions(GuitarChordEnum.A.GetDisplayDescription(), cursorWidth, cursorHeight);
+                //        break;
+                //        //default:
+                //        //    // Capo
+                //        //    // Finger positions
+                //        //    // Free strings
+                //        //    return false;
+                //}
                 //TODO here : remove switch du dessus et aller chercher l'enum dynamiquement
-                
+                AddFingersPositions(EnumerationExtensions.GetValueFromDisplayShortName<GuitarChordEnum>(chord).GetDisplayDescription(), cursorWidth, cursorHeight);
 
                 svg = SVGContent;
                 return true;

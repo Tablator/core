@@ -81,16 +81,91 @@
         /// <returns>The attribute of type T that exists on the enum value</returns>
         private static T GetAttributeOfType<TEnum, T>(this TEnum value)
             where TEnum : struct, IConvertible
-            where T : Attribute
-        {
-
-            return value.GetType()
-                .GetTypeInfo()
+            where T : Attribute => value.GetType()
+                        .GetTypeInfo()
                         .GetMember(value.ToString())
                         .First()
                         .GetCustomAttributes(false)
                         .OfType<T>()
                         .LastOrDefault();
+
+        public static T GetValueFromDisplayDescription<T>(string val)
+        {
+            Type type = typeof(T);
+
+            if (!type.GetTypeInfo().IsEnum)
+                throw new InvalidOperationException();
+
+            foreach (FieldInfo field in type.GetTypeInfo().GetFields())
+            {
+                //var attribute = Attribute.GetCustomAttribute(field,
+                //    typeof(DescriptionAttribute)) as DescriptionAttribute;
+                //if (attribute != null)
+                //{
+                //    if (attribute.Description == description)
+                //        return (T)field.GetValue(null);
+                //}
+                //else
+                //{
+                //    if (field.Name == description)
+                //        return (T)field.GetValue(null);
+                //}
+
+                Attribute attr = field.GetCustomAttribute(typeof(DisplayAttribute));
+                if (attr != null)
+                {
+                    if (((DisplayAttribute)attr).GetDescription() == val)
+                        return (T)field.GetValue(null);
+                }
+            }
+
+            return default(T);
         }
+
+        public static T GetValueFromDisplayShortName<T>(string val)
+        {
+            Type type = typeof(T);
+
+            if (!type.GetTypeInfo().IsEnum)
+                throw new InvalidOperationException();
+
+            foreach (FieldInfo field in type.GetTypeInfo().GetFields())
+            {
+                Attribute attr = field.GetCustomAttribute(typeof(DisplayAttribute));
+                if (attr != null)
+                {
+                    if (((DisplayAttribute)attr).GetShortName() == val)
+                        return (T)field.GetValue(null);
+                }
+            }
+
+            return default(T);
+        }
+
+        //public static T GetValueFromAttribute<T>(Attribute attr, string val)
+        //{
+        //    Type type = typeof(T);
+
+        //    if (!type.GetTypeInfo().IsEnum)
+        //        throw new InvalidOperationException();
+
+        //    foreach (var field in type.GetFields())
+        //    {
+        //        var attribute = Attribute.GetCustomAttribute(field,
+        //            typeof(DescriptionAttribute)) as DescriptionAttribute;
+        //        if (attribute != null)
+        //        {
+        //            if (attribute.Description == description)
+        //                return (T)field.GetValue(null);
+        //        }
+        //        else
+        //        {
+        //            if (field.Name == description)
+        //                return (T)field.GetValue(null);
+        //        }
+        //    }
+
+        //    return default(T);
+        //}
     }
 }
