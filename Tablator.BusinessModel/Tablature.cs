@@ -42,6 +42,9 @@
         [JsonProperty(PropertyName = "instruments")]
         public List<InstrumentPart> Instruments { get; set; }
 
+        [JsonProperty(PropertyName = "src")]
+        public TablatureSource Source { get; set; }
+
         public string GetPartName(int id, CultureInfo ci) => Languages.Where(x => x.LangCode == ci.TwoLetterISOLanguageName).FirstOrDefault()?.Content?.Where(x => x.Fieldcode == (int)LanguageContentItemPropertyEnum.Nom && x.Typecode == (int)LanguageContentItemEnum.Partie && x.Id == id).Select(x => x.Content).FirstOrDefault();
     }
 
@@ -65,5 +68,43 @@
 
         [JsonProperty(PropertyName = "val")]
         public string Val { get; set; }
+    }
+
+    public class TablatureSource
+    {
+        [JsonProperty(PropertyName = "type")]
+        public int TypeCode { get; set; }
+
+        public TablatureSourceTypeEnum Type => (TablatureSourceTypeEnum)TypeCode;
+
+        [JsonProperty(PropertyName = "support")]
+        public int SupportCode { get; set; }
+
+        public TablatureSourceSupportEnum Support => (TablatureSourceSupportEnum)SupportCode;
+
+        /// <summary>
+        /// Nom de la source, donné par l'auteur
+        /// </summary>
+        [JsonProperty(PropertyName = "name")]
+        public string Name { get; set; }
+
+        [JsonProperty(PropertyName = "val")]
+        public string Value { get; set; }
+
+        /// <summary>
+        /// Description de la source par l'auteur de la tab
+        /// </summary>
+        [JsonProperty(PropertyName = "desc")]
+        public string Description { get; set; }
+    }
+
+    public enum TablatureSourceTypeEnum
+    {
+        Media = 1
+    }
+
+    public enum TablatureSourceSupportEnum
+    {
+        YouTube = 1
     }
 }
