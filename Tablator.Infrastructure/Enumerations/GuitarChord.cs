@@ -15,4 +15,14 @@
         [Display(Name = "F major", Description = "1|3|3|2|1|1|1", ShortName = "F", GroupName = "F")]
         F
     }
+
+    public enum GuitarPowerChordEnum
+    {
+        [Display(Name = "B major", Description = "|2|4|4|||0", ShortName = "B", GroupName = "B")]
+        B,
+        [Display(Name = "D5", Description = "|5|7|7|||0", ShortName = "D5", GroupName = "D")]
+        D5,
+        [Display(Name = "C5", Description = "|3|5|5|||0", ShortName = "C5", GroupName = "C")]
+        C5
+    }
 }

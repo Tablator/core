@@ -6,6 +6,8 @@
         Duration = 2,
         Mute = 3,
         Position = 4,
-        Corde = 5
+        Corde = 5,
+        Chord = 6,
+        Powerchord=7
     }
 }
