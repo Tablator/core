@@ -97,14 +97,4 @@
         [JsonProperty(PropertyName = "desc")]
         public string Description { get; set; }
     }
-
-    public enum TablatureSourceTypeEnum
-    {
-        Media = 1
-    }
-
-    public enum TablatureSourceSupportEnum
-    {
-        YouTube = 1
-    }
 }
