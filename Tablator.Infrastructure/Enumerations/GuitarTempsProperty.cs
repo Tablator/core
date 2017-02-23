@@ -4,4 +4,9 @@
     {
         Chord = 1
     }
+
+    public enum GuitarMesurePropertyEnum
+    {
+        Chord = 1
+    }
 }
