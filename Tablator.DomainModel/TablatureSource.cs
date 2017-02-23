@@ -1,8 +1,6 @@
 ﻿namespace Tablator.DomainModel
 {
     using Newtonsoft.Json;
-    using System;
-    using System.Collections.Generic;
 
     /// <summary>
     /// Source de la tablature (d'après un tuto youtube ? un livre ? une tab trouvée quelque part ? à l'oreille ?)

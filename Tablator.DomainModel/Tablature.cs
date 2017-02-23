@@ -58,5 +58,17 @@
         /// </summary>
         [JsonProperty(PropertyName = "lngrsrcs")]
         public IEnumerable<LanguageResource> LanguageResources { get; set; }
+
+        /// <summary>
+        /// Instrument de la tablature (guitar, bass guitar, banjo, ...)
+        /// </summary>
+        [JsonProperty(PropertyName = "instrument")]
+        public int Instrument { get; set; }
+
+        /// <summary>
+        /// Type d'instrument (acoustic guitar, banjo 5 strings, electro-acoustic guitar, ...)
+        /// </summary>
+        [JsonProperty(PropertyName = "instrument_type")]
+        public int? InstrumentType { get; set; }
     }
 }
