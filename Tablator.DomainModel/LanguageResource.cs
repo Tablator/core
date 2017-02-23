@@ -1,8 +1,6 @@
 ﻿namespace Tablator.DomainModel
 {
-    using System;
     using System.Collections.Generic;
-    using System.Text;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -19,21 +17,8 @@
 
         [JsonProperty(PropertyName = "cnt")]
         public IEnumerable<LanguageResourceContentItem> Content { get; set; }
-    }
 
-    [JsonObject(MemberSerialization.OptIn)]
-    public sealed class LanguageResourceContentItem
-    {
-        [JsonProperty(PropertyName = "type")]
-        public int Type { get; set; }
-
-        [JsonProperty(PropertyName = "field")]
-        public int Field { get; set; }
-
-        [JsonProperty(PropertyName = "id")]
-        public int Id { get; set; }
-
-        [JsonProperty(PropertyName = "content")]
-        public string Content { get; set; }
+        [JsonProperty(PropertyName = "tags")]
+        public IEnumerable<string> Tags { get; set; }
     }
 }
