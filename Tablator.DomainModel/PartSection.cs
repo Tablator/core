@@ -77,4 +77,9 @@
         [JsonProperty(PropertyName = "val")]
         public string Value { get; set; }
     }
+
+    [JsonObject(MemberSerialization.OptIn)]
+    public sealed class TablatureProperty : BasePropertyItem
+    {
+    }
 }

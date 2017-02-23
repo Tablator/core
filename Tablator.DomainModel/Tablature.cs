@@ -11,6 +11,12 @@
     public sealed class Tablature
     {
         /// <summary>
+        /// Attributs de la tablature (nom de la chanson, ...)
+        /// </summary>
+        [JsonProperty(PropertyName = "pprts")]
+        public IEnumerable<TablatureProperty> Properties { get; set; }
+
+        /// <summary>
         /// Source de la tablature (d'après un tuto youtube ? un livre ? une tab trouvée quelque part ? à l'oreille ?)
         /// </summary>
         [JsonProperty(PropertyName = "src")]
