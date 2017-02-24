@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Text;
     using Tablator.DataAccess.Repositories;
+    using System.Threading.Tasks;
+    using BusinessModel;
 
     public sealed class TablatureService : ITablatureService
     {
@@ -12,6 +14,11 @@
         public TablatureService(ITablatureRepository tablatureRepository)
         {
             _repository = tablatureRepository;
+        }
+
+        public async Task<TablatureModel> Load(string filePath)
+        {
+            throw new NotImplementedException();
         }
     }
 }

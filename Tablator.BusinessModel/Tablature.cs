@@ -5,6 +5,7 @@
     using System.Globalization;
     using System.Linq;
     using Tablator.Infrastructure.Enumerations;
+    using System;
 
     [JsonObject(MemberSerialization.OptIn)]
     public class Tablature
@@ -96,5 +97,18 @@
         /// </summary>
         [JsonProperty(PropertyName = "desc")]
         public string Description { get; set; }
+    }
+
+    public class TablatureModel
+    {
+        public Guid Id { get; }
+
+        public TablatureInformationModel Info { get; }
+    }
+
+    public class TablatureInformationModel
+    {
+        public string songName { get; }
+        public string ArtistName { get; }
     }
 }
