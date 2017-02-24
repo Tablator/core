@@ -8,8 +8,7 @@
     /// Catalog's hierarchy level
     /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
-    [Obsolete("use CatalogHierarchyLevel", false)]
-    public class Hierarchy
+    public sealed class CatalogHierarchyLevel
     {
         [JsonProperty(PropertyName = "id")]
         public Guid Id { get; set; }
@@ -31,10 +30,9 @@
     }
 
     [JsonObject(MemberSerialization.OptIn)]
-    [Obsolete("use CatalogHierarchyCollectionLevel", false)]
-    public class Catalog
+    public sealed class CatalogHierarchyCollectionLevel
     {
         [JsonProperty(PropertyName = "hrrch")]
-        public List<Hierarchy> Hierarchy { get; set; }
+        public IEnumerable<CatalogHierarchyLevel> HierarchyLevels { get; set; }
     }
 }

@@ -10,4 +10,7 @@
     <PackageReference Include="NETStandard.Library" Version="1.6" />
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Tablator.Infrastructure\Tablator.Infrastructure.csproj" />
+  </ItemGroup>
 </Project>
