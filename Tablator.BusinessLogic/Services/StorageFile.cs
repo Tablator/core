@@ -1,4 +1,4 @@
-﻿namespace Tablator.Infrastructure.DataAccess.Bases
+﻿namespace Tablator.BusinessLogic.Services
 {
     using System;
     using System.Collections.Generic;
@@ -9,9 +9,9 @@
     using Infrastructure.Extensions;
 
     /// <summary>
-    /// Base class to deal with Tablator file storage system
+    /// Service to handle storage file system
     /// </summary>
-    public abstract class BaseFileRepository
+    public sealed class StorageFileService : IStorageFileService
     {
         /// <summary>
         /// File system root directory
@@ -29,7 +29,11 @@
             CatalogReference
         }
 
-        public BaseFileRepository(string rootDirectory)
+        /// <summary>
+        /// Creates new instance of the service
+        /// </summary>
+        /// <param name="rootDirectory">File system root directory</param>
+        public StorageFileService(string rootDirectory)
         {
             if (string.IsNullOrWhiteSpace(rootDirectory))
                 throw new ArgumentNullException(nameof(rootDirectory));
@@ -45,22 +49,12 @@
         /// </summary>
         /// <returns>hierarchy file's absolute path or null</returns>
         /// <remarks>Checks if the file exists. If not, returns null.</remarks>
-        protected async Task<string> GetCatalogHierarchyPath()
+        public async Task<string> GetCatalogHierarchyPath()
         {
             if (!File.Exists(Path.Combine(_root_Directory, StorageFileEnum.CatalogHierarchy.GetDisplayDescription())))
                 return null;
 
             return Path.Combine(_root_Directory, StorageFileEnum.CatalogHierarchy.GetDisplayDescription());
-        }
-
-        protected bool IsSectionExist(string filePath)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected bool TryGetFileSectionContent(string filePath, out string json)
-        {
-            throw new NotImplementedException();
         }
     }
 }

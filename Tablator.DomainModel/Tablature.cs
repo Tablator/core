@@ -70,5 +70,11 @@
         /// </summary>
         [JsonProperty(PropertyName = "instrument_type")]
         public int? InstrumentType { get; set; }
+
+        /// <summary>
+        /// Historique des actions effectuées (création, modifications, migration de version de logiciel, ...)
+        /// </summary>
+        [JsonProperty(PropertyName = "updts")]
+        public IEnumerable<HistoryEntry> History { get; set; }
     }
 }

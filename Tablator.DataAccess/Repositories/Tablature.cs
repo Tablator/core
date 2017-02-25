@@ -12,8 +12,8 @@
     /// </summary>
     public sealed class TablatureRepository : BaseFileRepository, ITablatureRepository
     {
-        public TablatureRepository()
-               : base()
+        public TablatureRepository(string catalogRootDirectory)
+               : base(catalogRootDirectory)
         { }
 
         public async Task<TablatureInformationModel> LoadInfo(string filePath)
