@@ -15,10 +15,6 @@
         public TablatureRepository(string catalogRootDirectory)
                : base(catalogRootDirectory)
         { }
-
-        public async Task<TablatureInformationModel> LoadInfo(string filePath)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }
