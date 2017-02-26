@@ -18,16 +18,14 @@
                : base(catalogRootDirectory)
         { }
 
-        public async Task<List<CatalogHierarchyLevel>> ListHierarchyLevels()
+        public CatalogHierarchyCollectionLevel ListHierarchyLevels()
         {
-            using (StreamReader file = File.OpenText(await GetCatalogHierarchyPath()))
-            {
-                using (JsonTextReader rdr = new JsonTextReader(file))
-                {
-                    o2 = (Newtonsoft.Json.Linq.JObject)Newtonsoft.Json.Linq.JToken.ReadFrom(rdr);
-                    json = o2.ToString();
-                }
-            }
+            CatalogHierarchyCollectionLevel ret = null;
+
+            if (!TryParseFileContent<CatalogHierarchyCollectionLevel>(StorageFileEnum.CatalogHierarchy, out ret))
+                return null;
+
+            return ret;
         }
     }
 }

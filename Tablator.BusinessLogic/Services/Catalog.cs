@@ -21,9 +21,10 @@
             _repository = catalogRepository;
         }
 
-        public async Task<CatalogModel> LoadArborescence()
+        public async Task<CatalogModel> GetCatalog()
         {
-
+            CatalogModel ret = (CatalogModel)_repository.ListHierarchyLevels();
+            return ret;
         }
     }
 }

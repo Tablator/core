@@ -6,11 +6,21 @@
         public const string Value = "val";
     }
 
-    public static class SoftwareVersionSerializationConstants
+    public static class TablatureSerializationConstants
     {
-        public const string Date = "dt";
-        public const string Major = "mjr";
-        public const string Minor = "mnr";
-        public const string Revision = "rev";
+        public const string Instrument = "instrument";
+        public const string TypeInstrument = "instrument_type";
+
+        public static class SoftwareVersionConstants
+        {
+            public const string SectionName = "sftvrsns";
+
+            public static class SectionPropertiesConstants
+            {
+                public const string Major = "mjr";
+                public const string Minor = "mnr";
+                public const string Revision = "rev";
+            }
+        }
     }
 }

@@ -23,10 +23,10 @@
         public TablatureSource Source { get; set; }
 
         /// <summary>
-        /// Historique des versions de format de la tab
+        /// Tablature software version
         /// </summary>
-        [JsonProperty(PropertyName = "sftvrsns")]
-        public IEnumerable<SoftwareVersion> Versions { get; set; }
+        [JsonProperty(PropertyName = "sftvrsn")]
+        public SoftwareVersion Versions { get; set; }
 
         /// <summary>
         /// Configuration de l'instrument (tuning, capodastre, ...)

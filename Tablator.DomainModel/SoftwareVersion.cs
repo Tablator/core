@@ -1,8 +1,7 @@
 ﻿namespace Tablator.DomainModel
 {
     using Newtonsoft.Json;
-    using System;
-    using Tablator.Infrastructure.DomainModel.Constants;
+    using static Tablator.Infrastructure.DomainModel.Constants.TablatureSerializationConstants.SoftwareVersionConstants;
 
     /// <summary>
     /// Version du format de la tablature
@@ -11,27 +10,21 @@
     public sealed class SoftwareVersion
     {
         /// <summary>
-        /// Date du versionning de la tab (création ou mise à jour format)
-        /// </summary>
-        [JsonProperty(PropertyName = SoftwareVersionSerializationConstants.Date)]
-        public DateTime Date { get; set; }
-
-        /// <summary>
         /// Major version number
         /// </summary>
-        [JsonProperty(PropertyName = SoftwareVersionSerializationConstants.Major)]
+        [JsonProperty(PropertyName = SectionPropertiesConstants.Major)]
         public int Major { get; set; }
 
         /// <summary>
         /// Minor version number
         /// </summary>
-        [JsonProperty(PropertyName = SoftwareVersionSerializationConstants.Minor)]
+        [JsonProperty(PropertyName = SectionPropertiesConstants.Minor)]
         public int Minor { get; set; }
 
         /// <summary>
         /// Revision number
         /// </summary>
-        [JsonProperty(PropertyName = SoftwareVersionSerializationConstants.Revision)]
+        [JsonProperty(PropertyName = SectionPropertiesConstants.Revision)]
         public int Revision { get; set; }
     }
 }
