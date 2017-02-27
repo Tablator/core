@@ -16,7 +16,12 @@ namespace Tablator.BusinessModel.Tablature
         { }
     }
 
-    public sealed class GuitarTablatureModel : TablatureModel
+    public interface IInstrumentTablature
+    {
+
+    }
+
+    public sealed class GuitarTablatureModel : TablatureModel, IInstrumentTablature
     {
         public GuitarTablatureModel()
             : base()

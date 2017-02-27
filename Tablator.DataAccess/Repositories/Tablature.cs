@@ -5,7 +5,7 @@
     using System.Text;
     using Infrastructure.DataAccess.Bases;
     using System.Threading.Tasks;
-    using BusinessModel;
+    using DomainModel;
 
     /// <summary>
     /// Repository to deal with tablatures data
@@ -15,6 +15,14 @@
         public TablatureRepository(string catalogRootDirectory)
                : base(catalogRootDirectory)
         { }
-        
+
+        public Tablature Get(Guid id)
+        {
+            Tablature ret = null;
+            if (!TryParseTablatureFileContent<Tablature>(id, out ret))
+                return null;
+
+            return ret;
+        }
     }
 }

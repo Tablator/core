@@ -11,9 +11,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Tablator.BusinessModel\Tablator.BusinessModel.csproj" />
-    <ProjectReference Include="..\Tablator.DataAccess\Tablator.DataAccess.csproj" />
-    <ProjectReference Include="..\Tablator.DomainModel\Tablator.DomainModel.csproj" />
     <ProjectReference Include="..\Tablator.Infrastructure\Tablator.Infrastructure.csproj" />
-    <ProjectReference Include="..\Tablator.Rendering.SVG\Tablator.Rendering.SVG.csproj" />
+    <ProjectReference Include="..\Tablator.Rendering.Core\Tablator.Rendering.Core.csproj" />
   </ItemGroup>
 </Project>

@@ -5,7 +5,8 @@
     using System.Text;
     using Tablator.DataAccess.Repositories;
     using System.Threading.Tasks;
-    using BusinessModel;
+    using BusinessModel.Tablature;
+    using Infrastructure.Enumerations;
 
     public sealed class TablatureService : ITablatureService
     {
@@ -16,9 +17,19 @@
             _repository = tablatureRepository;
         }
 
-        public async Task<TablatureModel> Load(string filePath)
+        public IInstrumentTablature Get(Guid id, InstrumentEnum instrument)
         {
-            throw new NotImplementedException();
+            if (id == Guid.Empty)
+                throw new ArgumentNullException(nameof(id));
+
+            switch (instrument)
+            {
+                case InstrumentEnum.Guitar:
+                    GuitarTablatureModel tab = (GuitarTablatureModel)_repository.Get(id);
+                    return tab;
+                default:
+                    throw new NotImplementedException();
+            }
         }
     }
 }
