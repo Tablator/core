@@ -4,9 +4,11 @@
     using System.Collections.Generic;
     using System.Text;
     using BusinessModel.Tablature;
+    using Infrastructure.Enumerations;
+    using Infrastructure.Models;
 
     public interface ITablatureRenderingBuilder
     {
-         bool TryBuildOutputContent(TablatureModel tab, TablatureRenderingOptions options, out string outputContent);
+        TabGenerationStatus BuildOutputContent(TablatureModel tab, TablatureRenderingOptions options, out string outputContent);
     }
 }

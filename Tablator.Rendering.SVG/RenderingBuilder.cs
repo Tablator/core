@@ -8,7 +8,7 @@
     using Infrastructure.Rendering;
     using Infrastructure.Enumerations;
 
-    public class RenderingBuilder : ITablatureRenderingBuilder
+    public sealed class RenderingBuilder : ITablatureRenderingBuilder
     {
         public RenderingBuilder()
         { }
