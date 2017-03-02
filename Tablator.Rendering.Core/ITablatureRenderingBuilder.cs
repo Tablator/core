@@ -9,6 +9,6 @@
 
     public interface ITablatureRenderingBuilder
     {
-        TabGenerationStatus BuildOutputContent(TablatureModel tab, TablatureRenderingOptions options, out string outputContent);
+        TabGenerationStatus BuildOutputContent(IInstrumentTablature tab, TablatureRenderingOptions options, out string outputContent);
     }
 }

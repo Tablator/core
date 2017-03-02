@@ -9,7 +9,7 @@
 
     public interface ITablatureRenderingBuilderService
     {
-        bool TryBuild(InstrumentEnum instrument, out TabGenerationStatus status, out string ret);
-        void Init(TablatureRenderingOptions options, Tablature tab);
+        //bool TryBuild(InstrumentEnum instrument, out TabGenerationStatus status, out string ret);
+        //void Init(TablatureRenderingOptions options, Tablature tab);
     }
 }
