@@ -11,7 +11,7 @@
     {
         private TablatureRenderingOptions Options { get; set; }
 
-        private TablatureModel Tablature { get; set; }
+        private GuitarTablatureModel Tablature { get; set; }
 
         private int cursorWith { get; set; } = 0;
 
@@ -27,6 +27,8 @@
         public TabGenerationStatus BuildOutputContent(IInstrumentTablature tab, TablatureRenderingOptions options, out string outputContent)
         {
             outputContent = null;
+            Tablature = (GuitarTablatureModel)tab;
+            Options = options;
 
             try
             {

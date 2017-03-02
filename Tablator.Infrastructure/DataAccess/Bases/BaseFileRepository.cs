@@ -93,10 +93,10 @@
         /// <returns></returns>
         private string GetTablatureFilePath(Guid id)
         {
-            if (!File.Exists(Path.Combine(_root_Directory, id.ToString() + "." + _file_Extension)))
+            if (!File.Exists(Path.Combine(_root_Directory, id.ToString().Replace("-", null) + "." + _file_Extension)))
                 return null;
 
-            return Path.Combine(_root_Directory, id.ToString() + "." + _file_Extension);
+            return Path.Combine(_root_Directory, id.ToString().Replace("-", null) + "." + _file_Extension);
         }
 
         /// <summary>

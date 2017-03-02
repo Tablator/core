@@ -1,5 +1,6 @@
 ﻿namespace Tablator.DomainModel
 {
+    using System;
     using Newtonsoft.Json;
 
     [JsonObject(MemberSerialization.OptIn)]
@@ -12,7 +13,7 @@
         public int Field { get; set; }
 
         [JsonProperty(PropertyName = "id")]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [JsonProperty(PropertyName = "content")]
         public string Content { get; set; }
