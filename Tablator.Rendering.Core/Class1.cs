@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tablator.SVGBuilder
+namespace Tablator.Rendering.Core
 {
     public class Class1
     {
