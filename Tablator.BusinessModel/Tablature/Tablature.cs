@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Tablator.Infrastructure.Enumerations;
+using System.Globalization;
 
 namespace Tablator.BusinessModel.Tablature
 {
@@ -11,9 +12,14 @@ namespace Tablator.BusinessModel.Tablature
         public Guid Id { get; protected set; }
         public string SongName { get; protected set; }
         public string ArtistName { get; protected set; }
+        public int? Tempo { get; protected set; }
+        public List<StructureSectionModel> Structure { get; protected set; }
+        public LanguageResourceCollectionModel LanguageResources { get; protected set; }
 
         public TablatureModel()
         { }
+
+        public string GetPartName(Guid id, CultureInfo ci) => LanguageResources.GetPartName(id, ci);
     }
 
     public interface IInstrumentTablature
@@ -23,11 +29,10 @@ namespace Tablator.BusinessModel.Tablature
 
     public sealed class GuitarTablatureModel : TablatureModel, IInstrumentTablature
     {
+
         public GuitarTablatureModel()
             : base()
-        {
-
-        }
+        { }
 
         public static explicit operator GuitarTablatureModel(DomainModel.Tablature tab)
         {
@@ -36,6 +41,14 @@ namespace Tablator.BusinessModel.Tablature
             ret.Id = new Guid(tab.Properties.Where(x => x.Code == (int)TablaturePropertyEnum.Identifier).FirstOrDefault().Value);
             ret.SongName = tab.Properties.Where(x => x.Code == (int)TablaturePropertyEnum.SongName).FirstOrDefault().Value;
             ret.ArtistName = tab.Properties.Where(x => x.Code == (int)TablaturePropertyEnum.Artist).FirstOrDefault().Value;
+            ret.Tempo = !string.IsNullOrWhiteSpace(tab.Properties.Where(x => x.Code == (int)TablaturePropertyEnum.Tempo).FirstOrDefault()?.Value) ? Convert.ToInt32(tab.Properties.Where(x => x.Code == (int)TablaturePropertyEnum.Tempo).FirstOrDefault()?.Value) : (int?)null;
+
+            ret.Structure = new List<StructureSectionModel>();
+            if (tab.Structure != null && tab.Structure.Count() > 0)
+                foreach (DomainModel.StructureSection sec in tab.Structure)
+                    ret.Structure.Add(new StructureSectionModel(sec.PartId, sec.Repeat));
+
+            ret.LanguageResources = new LanguageResourceCollectionModel(tab.LanguageResources);
 
             return ret;
         }

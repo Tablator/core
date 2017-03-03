@@ -52,7 +52,53 @@
                     svgHeight += 15;
                 }
 
-                outputContent = SVGContent;
+                if (Tablature.Tempo.HasValue && Tablature.Tempo.Value > 0)
+                {
+                    cursorHeight += 5;
+                    svgHeight += 5;
+                    SVGContent += "<text x=\"0\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"12\" text-anchor=\"left\">Tempo: " + Tablature.Tempo.Value + "</text>";
+                    cursorHeight += 15;
+                    svgHeight += 15;
+                }
+
+                if (Options.DisplayEnchainement && Tablature.Structure != null && Tablature.Structure.Count > 0)
+                {
+                    cursorHeight += 5;
+                    svgHeight += 5;
+
+                    if (!Options.AffichageEnchainementDetaille.HasValue || !Options.AffichageEnchainementDetaille.Value)
+                    {
+                        // Affichage simple
+                        SVGContent += "<text x=\"0\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"12\" text-anchor=\"left\">Enchaînement: ";
+                        foreach (StructureSectionModel ei in Tablature.Structure)
+                        {
+                            SVGContent += "(" + Tablature.GetPartName(ei.PartId, Options.Culture) + " x" + ei.Repeat + ") ";
+                        }
+                        SVGContent += "</text>";
+                    }
+                    else
+                    {
+                        // Affichage détaillé
+                        SVGContent += "<text x=\"0\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"12\" text-anchor=\"left\">Enchaînement:</text>";
+                        foreach (StructureSectionModel ei in Tablature.Structure)
+                        {
+                            cursorHeight += 15;
+                            svgHeight += 15;
+                            SVGContent += "<text x=\"20\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"12\" text-anchor=\"left\">- " + Tablature.GetPartName(ei.PartId, Options.Culture) + " x" + ei.Repeat + "</text>";
+                        }
+                    }
+
+                    cursorHeight += 15;
+                    svgHeight += 15;
+                }
+
+                // Implement instrument stuff (only guitar for now)
+
+
+
+                //
+
+                outputContent = "<svg width=\"" + Options.Width + "\" height=\"" + (svgHeight + 20) + "\">" + SVGContent + "</svg>";
                 return TabGenerationStatus.Succeed;
             }
             catch (Exception)
