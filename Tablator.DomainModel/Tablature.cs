@@ -31,8 +31,8 @@
         /// <summary>
         /// Configuration de l'instrument (tuning, capodastre, ...)
         /// </summary>
-        [JsonProperty(PropertyName = "instrument_settings")]
-        public IEnumerable<InstrumentSettings> InstrumentSettings { get; set; }
+        //[JsonProperty(PropertyName = "instrument_settings")]
+        //public IEnumerable<InstrumentSettings> InstrumentSettings { get; set; }
 
         /// <summary>
         /// Effets appliqués ('distorition', 'chorus', 'reverb', ...)

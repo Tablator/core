@@ -12,6 +12,6 @@
         public int Code { get; set; }
 
         [JsonProperty(PropertyName = "pprts")]
-        public IEnumerable<InstrumentConfiguationSectionProperty> Pprts { get; set; }
+        public IEnumerable<InstrumentConfiguationSectionProperty> Settings { get; set; }
     }
 }
