@@ -234,67 +234,72 @@
 
                 // contenu tab
 
-                //        cursorWith = 0;
+                cursorWith = 0;
 
-                //        foreach (Partie part in Tablature.Parties)
-                //        {
-                //            if (!string.IsNullOrWhiteSpace(Tablature.GetPartName(part.Id, Options.Culture)))
-                //            {
-                //                cursorHeight += 30;
-                //                SVGContent += "<text x=\"0\"  y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"15\">" + Tablature.GetPartName(part.Id, Options.Culture) + "</text>";
-                //                cursorHeight += 15;
-                //                cursorHeight += 5;
-                //                svgHeight += 50;
-                //            }
+                foreach (PartSectionModel part in Tablature.PartSections)
+                {
+                    if (!string.IsNullOrWhiteSpace(Tablature.GetPartName(part.Id, Options.Culture)))
+                    {
+                        cursorHeight += 30;
+                        SVGContent += "<text x=\"0\"  y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"15\">" + Tablature.GetPartName(part.Id, Options.Culture) + "</text>";
+                        cursorHeight += 15;
+                        cursorHeight += 5;
+                        svgHeight += 50;
+                    }
 
-                //            // On crée une ligne vide de tab
-                //            CreateNewLine();
+                    // On crée une ligne vide de tab
+                    CreateNewLine();
 
-                //            // Et on mets les notes
+                    // Et on mets les notes
 
-                //            int iMesures = 0;
+                    int iMesures = 0;
 
-                //            for (int i = 0; i < part.Mesures.Count; i++)
-                //            {
-                //                iMesures++;
+                    for (int i = 0; i < part.Mesures.Count; i++)
+                    {
+                        iMesures++;
 
-                //                foreach (Temps tmp in part.Mesures[i].Instruments.Where(x => x.Instrument == InstrumentEnum.Guitar).First().Temps)
-                //                {
-                //                    foreach (Son s in tmp.Sons)
-                //                    {
-                //                        if (s.Type == TypeSonEnum.Note)
-                //                            CreateNote(s.Corde, s.Position);
-                //                        else if (s.Type == TypeSonEnum.Accord)
-                //                            CreateChord(s.Chord, s.SensGrattageCode);
-                //                    }
-                //                }
+                        foreach (PartSectionMesureTempsModel tmp in part.Mesures[i].Temps)
+                        {
+                            foreach (PartSectionMesureTempsItemModel s in tmp.Sons)
+                            {
+                                //if (s.Type == TypeSonEnum.Note)
+                                //    CreateNote(s.Corde, s.Position);
+                                //else if (s.Type == TypeSonEnum.Accord)
+                                //    CreateChord(s.Chord, s.SensGrattageCode);
 
-                //                if (iMesures < part.Mesures.Count)
-                //                {
-                //                    int nbNotesNextMesure = 0;
-                //                    if (part.Mesures[i + 1] != null && part.Mesures[i + 1].Instruments.Where(x => x.Instrument == InstrumentEnum.Guitar).First().Temps != null && part.Mesures[i + 1].Instruments.Where(x => x.Instrument == InstrumentEnum.Guitar).First().Temps.Count > 0)
-                //                    {
-                //                        part.Mesures[i + 1].Instruments.Where(x => x.Instrument == InstrumentEnum.Guitar).First().Temps.ForEach(delegate (Temps t)
-                //                        {
-                //                            nbNotesNextMesure += t.Sons != null ? t.Sons.Count() : 0;
-                //                        });
-                //                    }
+                                if (Convert.ToInt32(s.Pprts.Where(x => x.Code == (int)GuitarPropertyEnum.Type).First().Value) == (int)TypeSonEnum.Note)
+                                    CreateNote(Convert.ToInt32(s.Pprts.Where(x => x.Code == (int)GuitarPropertyEnum.Corde).First().Value), Convert.ToInt32(s.Pprts.Where(x => x.Code == (int)GuitarPropertyEnum.Position).First().Value));
+                                else
+                                    CreateChord(s.Pprts.Where(x => x.Code == (int)GuitarPropertyEnum.Chord).First().Value, Convert.ToInt32(s.Pprts.Where(x => x.Code == (int)GuitarPropertyEnum.Direction).First().Value));
+                            }
+                        }
 
-                //                    if (cursorWith < (Options.Width - (20 + nbNotesNextMesure * 20)))
-                //                        CreateVerticalLine();
-                //                    else
-                //                    {
-                //                        cursorHeight += Options.StringSpacing * 6 + 20;
-                //                        CreateNewLine();
-                //                    }
-                //                }
-                //            }
+                        if (iMesures < part.Mesures.Count)
+                        {
+                            int nbNotesNextMesure = 0;
+                            if (part.Mesures[i + 1] != null && part.Mesures[i + 1].Temps != null && part.Mesures[i + 1].Temps.Count > 0)
+                            {
+                                part.Mesures[i + 1].Temps.ForEach(delegate (PartSectionMesureTempsModel t)
+                                {
+                                    nbNotesNextMesure += t.Sons != null ? t.Sons.Count() : 0;
+                                });
+                            }
 
-                //            // on mets à jour la hauteur du svg
+                            if (cursorWith < (Options.Width - (20 + nbNotesNextMesure * 20)))
+                                CreateVerticalLine();
+                            else
+                            {
+                                cursorHeight += Options.StringSpacing * 6 + 20;
+                                CreateNewLine();
+                            }
+                        }
+                    }
 
-                //            cursorHeight += Options.StringSpacing * 5;
-                //            svgHeight += cursorHeight;
-                //        }
+                    // on mets à jour la hauteur du svg
+
+                    cursorHeight += Options.StringSpacing * 5;
+                    svgHeight += cursorHeight;
+                }
 
                 // Response
 

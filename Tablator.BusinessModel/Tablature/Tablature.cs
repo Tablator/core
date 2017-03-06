@@ -16,6 +16,7 @@ namespace Tablator.BusinessModel.Tablature
         public List<StructureSectionModel> Structure { get; protected set; }
         public LanguageResourceCollectionModel LanguageResources { get; protected set; }
         public InstrumentEnum Instrument { get; protected set; }
+        public List<PartSectionModel> PartSections { get; protected set; }
 
         public TablatureModel()
         { }
@@ -84,6 +85,10 @@ namespace Tablator.BusinessModel.Tablature
                 if (tab.Instrument.ConfigurationSections.Where(x => x.Code == (int)GuitarConfiguationSectionEnum.Settings).FirstOrDefault().Settings.Where(x => x.Code == (int)GuitarSettingsEnum.Chords).FirstOrDefault() != null && tab.Instrument.ConfigurationSections.Where(x => x.Code == (int)GuitarConfiguationSectionEnum.Settings).FirstOrDefault().Settings.Where(x => x.Code == (int)GuitarSettingsEnum.Chords).FirstOrDefault().Value.Contains('|'))
                     ret.Chords = tab.Instrument.ConfigurationSections.Where(x => x.Code == (int)GuitarConfiguationSectionEnum.Settings).FirstOrDefault().Settings.Where(x => x.Code == (int)GuitarSettingsEnum.Chords).FirstOrDefault().Value.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
             }
+
+            ret.PartSections = new List<PartSectionModel>();
+            foreach (DomainModel.PartSection sec in tab.PartSections)
+                ret.PartSections.Add(new PartSectionModel(sec));
 
             return ret;
         }
