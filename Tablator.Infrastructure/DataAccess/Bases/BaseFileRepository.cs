@@ -75,12 +75,22 @@
             return Path.Combine(_root_Directory, StorageFileEnum.CatalogHierarchy.GetDisplayDescription());
         }
 
+        private string GetCatalogReferenceFilePath()
+        {
+            if (!File.Exists(Path.Combine(_root_Directory, StorageFileEnum.CatalogReference.GetDisplayDescription())))
+                return null;
+
+            return Path.Combine(_root_Directory, StorageFileEnum.CatalogReference.GetDisplayDescription());
+        }
+
         private string GetFilePath(StorageFileEnum file)
         {
             switch (file)
             {
                 case StorageFileEnum.CatalogHierarchy:
                     return GetCatalogHierarchyFilePath();
+                case StorageFileEnum.CatalogReference:
+                    return GetCatalogReferenceFilePath();
                 default:
                     throw new NotImplementedException();
             }
