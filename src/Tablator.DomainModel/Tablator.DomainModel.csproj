@@ -5,17 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Page1.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Page1.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Tablator.Infrastructure\Tablator.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -5,8 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
-    <Folder Include="ServiceInterfaces\" />
+    <ProjectReference Include="..\Tablator.BusinessModel\Tablator.BusinessModel.csproj" />
+    <ProjectReference Include="..\Tablator.DataAccess\Tablator.DataAccess.csproj" />
+    <ProjectReference Include="..\Tablator.Infrastructure\Tablator.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

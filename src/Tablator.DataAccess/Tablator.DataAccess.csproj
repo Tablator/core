@@ -9,6 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Tablator.BusinessModel\Tablator.BusinessModel.csproj" />
+    <ProjectReference Include="..\Tablator.DomainModel\Tablator.DomainModel.csproj" />
     <ProjectReference Include="..\Tablator.Infrastructure\Tablator.Infrastructure.csproj" />
   </ItemGroup>
 
