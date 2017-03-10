@@ -4,4 +4,9 @@
     <TargetFramework>netstandard1.6</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Tablator.BusinessModel\Tablator.BusinessModel.csproj" />
+    <ProjectReference Include="..\Tablator.Infrastructure\Tablator.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
