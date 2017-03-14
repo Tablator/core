@@ -24,9 +24,9 @@
 
         public HierarchyTabReferenceCollectionModel Tablatures { get; internal set; }
 
-        public bool Root => ParentId == null || ParentId.Value == Guid.Empty ? true : false;
+        public bool IsRoot => ParentId == null || ParentId.Value == Guid.Empty ? true : false;
 
-        public bool HasChildren => Descendance == null || Descendance.Count == 0 ? true : false;
+        public bool HasDescendance => Descendance == null || Descendance.Count == 0 ? false : true;
 
         public HierarchyModel(Guid id, string name, string desc, string pic, int posi)
         {
@@ -47,6 +47,9 @@
             if (tabs.Count() == 0)
                 return;
 
+            if (Tablatures == null)
+                Tablatures = new HierarchyTabReferenceCollectionModel();
+
             Tablatures.AddRange(tabs);
         }
 
@@ -57,6 +60,9 @@
 
             if (tabs.Count == 0)
                 return;
+
+            if (Tablatures == null)
+                Tablatures = new HierarchyTabReferenceCollectionModel();
 
             Tablatures.AddRange(tabs);
         }
@@ -72,6 +78,22 @@
             HierarchyCollectionModel ret = new HierarchyCollectionModel();
             ret.AddRange(this.Where(x => !x.ParentId.HasValue));
             return ret;
+        }
+
+        public void PopulateWithTablatures(ref HierarchyTabReferenceCollectionModel tabs)
+        {
+            if (tabs == null)
+                return;
+
+            if (tabs.Count == 0)
+                return;
+
+            foreach (HierarchyModel hier in this)
+            {
+                hier.AddTablatures(tabs.Where(x => x.Parents != null && x.Parents.Count > 0 && x.Parents.ContainsKey(hier.Id)));
+                if (hier.HasDescendance)
+                    hier.Descendance.PopulateWithTablatures(ref tabs);
+            }
         }
     }
 }
