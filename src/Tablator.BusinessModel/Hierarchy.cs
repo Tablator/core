@@ -22,7 +22,7 @@
 
         public HierarchyCollectionModel Descendance { get; }
 
-        public HierarchyTabReferenceCollectionModel Tablatures { get; }
+        public HierarchyTabReferenceCollectionModel Tablatures { get; internal set; }
 
         public bool Root => ParentId == null || ParentId.Value == Guid.Empty ? true : false;
 
@@ -38,6 +38,28 @@
 
             Descendance = new HierarchyCollectionModel();
         }
+
+        public void AddTablatures(IEnumerable<HierarchyTabReferenceModel> tabs)
+        {
+            if (tabs == null)
+                return;
+
+            if (tabs.Count() == 0)
+                return;
+
+            Tablatures.AddRange(tabs);
+        }
+
+        public void AddTablatures(HierarchyTabReferenceCollectionModel tabs)
+        {
+            if (tabs == null)
+                return;
+
+            if (tabs.Count == 0)
+                return;
+
+            Tablatures.AddRange(tabs);
+        }
     }
 
     public class HierarchyCollectionModel : List<HierarchyModel>
@@ -51,18 +73,5 @@
             ret.AddRange(this.Where(x => !x.ParentId.HasValue));
             return ret;
         }
-    }
-
-    public class HierarchyTabReferenceModel
-    {
-        public string Name { get; }
-        public string UrlTitle { get; }
-        public int Position { get; }
-    }
-
-    public class HierarchyTabReferenceCollectionModel : List<HierarchyTabReferenceModel>
-    {
-        public HierarchyTabReferenceCollectionModel()
-        { }
     }
 }

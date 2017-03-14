@@ -23,7 +23,7 @@
 
         public async Task<CatalogModel> GetCatalog()
         {
-            CatalogModel ret = (CatalogModel)_repository.ListHierarchyLevels();
+            CatalogModel ret = (CatalogModel)_repository.ListHierarchyLevels(); // TODO: replace this cast!
             return ret;
         }
 
@@ -38,6 +38,11 @@
                 throw new ArgumentNullException(nameof(urlPath));
 
             return await _repository.GetTablatureId(urlPath);
+        }
+
+        public async Task<HierarchyTabReferenceCollectionModel> ListReferences()
+        {
+           return new HierarchyTabReferenceCollectionModel(await _repository.ListReferences());
         }
     }
 }

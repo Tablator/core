@@ -16,5 +16,7 @@
         /// <param name="urlPath">chemin d'accès url de la tab (ex=> "guitar-tab-francis-cabrel-jelaimeamourir")</param>
         /// <returns>identifiant de la tablature ou null</returns>
         Task<Guid?> GetTablatureId(string urlPath);
+
+        Task<HierarchyTabReferenceCollectionModel> ListReferences();
     }
 }

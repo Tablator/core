@@ -51,5 +51,15 @@
 
             return refs.Refs.Where(x => x.UrlPath.ToLower() == urlPath.ToLower()).Select(x => x.Id).FirstOrDefault();
         }
+
+        public async Task<CatalogHierarchyTabReferenceCollection> ListReferences()
+        {
+            CatalogHierarchyTabReferenceCollection ret = null;
+
+            if (!TryParseFileContent<CatalogHierarchyTabReferenceCollection>(StorageFileEnum.CatalogReference, out ret))
+                return null;
+
+            return ret;
+        }
     }
 }
