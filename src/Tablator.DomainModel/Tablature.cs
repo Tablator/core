@@ -29,12 +29,6 @@
         public SoftwareVersion Versions { get; set; }
 
         /// <summary>
-        /// Configuration de l'instrument (tuning, capodastre, ...)
-        /// </summary>
-        //[JsonProperty(PropertyName = "instrument_settings")]
-        //public IEnumerable<InstrumentSettings> InstrumentSettings { get; set; }
-
-        /// <summary>
         /// Effets appliqués ('distorition', 'chorus', 'reverb', ...)
         /// </summary>
         [JsonProperty(PropertyName = "instrument_effects")]
@@ -70,5 +64,90 @@
         /// </summary>
         [JsonProperty(PropertyName = "updts")]
         public IEnumerable<HistoryEntry> History { get; set; }
+
+        /// <summary>
+        /// Paroles de la chanson (peut être null)
+        /// </summary>
+        /// <remarks>Les paroles peuvent être annotés, avec des accords par exemple</remarks>
+        [JsonProperty(PropertyName = "lrcs")]
+        public Lyrics Lyrics { get; set; }
+    }
+
+    /// <summary>
+    /// Paroles de la chanson (peut être null)
+    /// </summary>
+    /// <remarks>Les paroles peuvent être annotés, avec des accords par exemple</remarks>
+    [JsonObject(MemberSerialization.OptIn)]
+    public class Lyrics
+    {
+        /// <summary>
+        /// Langue des paroles
+        /// </summary>
+        [JsonProperty(PropertyName = "lng")]
+        public string Lang { get; set; }
+
+        /// <summary>
+        /// Auteur des paroles
+        /// </summary>
+        [JsonProperty(PropertyName = "thr")]
+        public string Author { get; set; }
+
+        /// <summary>
+        /// Phrasé - Combien de phrases affiche-t-on sur une ligne ?
+        /// </summary>
+        [JsonProperty(PropertyName = "phrs")]
+        public int? Phrase { get; set; }
+
+        /// <summary>
+        /// Paroles
+        /// </summary>
+        [JsonProperty(PropertyName = "prts")]
+        public IEnumerable<LyricsPart> Parts { get; set; }
+    }
+
+    [JsonObject(MemberSerialization.OptIn)]
+    public class LyricsPart
+    {
+        [JsonProperty(PropertyName = "id")]
+        public Guid Id { get; set; }
+
+        [JsonProperty(PropertyName = "pid")]
+        public Guid PartId { get; set; }
+
+        [JsonProperty(PropertyName = "phrss")]
+        public IEnumerable<LyricsPhrase> Phrases { get; set; }
+    }
+
+    [JsonObject(MemberSerialization.OptIn)]
+    public class LyricsPhrase
+    {
+        [JsonProperty(PropertyName = "a")]
+        public IEnumerable<LyricsPhraseAttribute> Attributes { get; set; }
+
+        [JsonProperty(PropertyName = "c")]
+        public IEnumerable<LyricsChord> Chords { get; set; }
+    }
+
+    [JsonObject(MemberSerialization.OptIn)]
+    public class LyricsPhraseAttribute : BasePropertyItem
+    {
+
+    }
+
+    [JsonObject(MemberSerialization.OptIn)]
+    public class LyricsChord
+    {
+        /// <summary>
+        /// Position du mot sur lequel l'accord doit être joué
+        /// </summary>
+        /// <remarks>Si valeur négative, on fait référence à une enum</remarks>
+        [JsonProperty(PropertyName = "p")]
+        public int Position { get; set; }
+
+        /// <summary>
+        /// Accord à jouer
+        /// </summary>
+        [JsonProperty(PropertyName = "c")]
+        public string Chord { get; set; }
     }
 }
