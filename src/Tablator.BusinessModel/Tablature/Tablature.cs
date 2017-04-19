@@ -17,11 +17,86 @@ namespace Tablator.BusinessModel.Tablature
         public LanguageResourceCollectionModel LanguageResources { get; protected set; }
         public InstrumentEnum Instrument { get; protected set; }
         public List<PartSectionModel> PartSections { get; protected set; }
+        public LyricsModel Lyrics { get; protected set; }
 
         public TablatureModel()
         { }
 
         public string GetPartName(Guid id, CultureInfo ci) => LanguageResources.GetPartName(id, ci);
+    }
+
+    public class LyricsModel
+    {
+        public string Language { get; protected set; }
+        public string Author { get; protected set; }
+        public int Phrase { get; protected set; }
+        public List<LyricsPartModel> Parts { get; protected set; }
+
+        public LyricsModel(DomainModel.Lyrics lyrics)
+        {
+            if (lyrics == null)
+                return;
+
+            Language = lyrics.Lang;
+            Author = lyrics.Author;
+            Phrase = lyrics.Phrase.HasValue ? lyrics.Phrase.Value : 1;
+            Parts = new List<LyricsPartModel>();
+
+            if (lyrics.Parts == null)
+                return;
+
+            foreach (DomainModel.LyricsPart p in lyrics.Parts)
+                Parts.Add(new LyricsPartModel(p));
+        }
+    }
+
+    public class LyricsPartModel
+    {
+        public Guid Id { get; protected set; }
+        public Guid PartId { get; protected set; }
+        public List<LyricsSentenceModel> Sentences { get; protected set; }
+
+        public LyricsPartModel(DomainModel.LyricsPart part)
+        {
+            Id = part.Id;
+            PartId = part.PartId;
+            Sentences = new List<LyricsSentenceModel>();
+
+            foreach (DomainModel.LyricsPhrase p in part.Phrases)
+                Sentences.Add(new LyricsSentenceModel(p));
+        }
+    }
+
+    public class LyricsSentenceModel
+    {
+        public string Sentence { get; protected set; }
+
+        public List<LyricsSentenceChordModel> Chords { get; set; }
+
+        public LyricsSentenceModel(DomainModel.LyricsPhrase p)
+        {
+            Sentence = p?.Attributes?.Where(x => x.Code == (int)LyricsSentenceAttributeEnum.SentenceContent).Select(x => x.Value).FirstOrDefault();
+
+            Chords = new List<LyricsSentenceChordModel>();
+
+            if (p.Chords == null || p.Chords.Count() == 0)
+                return;
+
+            foreach (DomainModel.LyricsChord c in p.Chords)
+                Chords.Add(new LyricsSentenceChordModel(c.Position, c.Chord));
+        }
+    }
+
+    public class LyricsSentenceChordModel
+    {
+        public int Position { get; protected set; }
+        public string Chord { get; protected set; }
+
+        public LyricsSentenceChordModel(int position, string chord)
+        {
+            Position = position;
+            Chord = chord;
+        }
     }
 
     public interface IInstrumentTablature
@@ -63,17 +138,7 @@ namespace Tablator.BusinessModel.Tablature
 
             if (tab.Instrument.InstrumentType.HasValue && tab.Instrument.InstrumentType.Value > 0)
                 ret.GuitarType = (GuitarTypeEnum)tab.Instrument.InstrumentType.Value;
-            //ret.Capodastre = tab.InstrumentSettings.Where(x => x.Code == (int)GuitarSettingsEnum.Capodastre).FirstOrDefault() != null ? Convert.ToInt32(tab.InstrumentSettings.Where(x => x.Code == (int)GuitarSettingsEnum.Capodastre).FirstOrDefault().Value) : (int?)null;
-            //ret.Tuning = tab.InstrumentSettings.Where(x => x.Code == (int)GuitarSettingsEnum.Tuning).FirstOrDefault() != null ? tab.InstrumentSettings.Where(x => x.Code == (int)GuitarSettingsEnum.Tuning).FirstOrDefault().Value : null;
-            //ret.Chords = new List<string>();
-            //if (tab.InstrumentSettings.Where(x => x.Code == (int)GuitarSettingsEnum.Chords).FirstOrDefault() != null && !string.IsNullOrWhiteSpace(tab.InstrumentSettings.Where(x => x.Code == (int)GuitarSettingsEnum.Chords).FirstOrDefault().Value) && tab.InstrumentSettings.Where(x => x.Code == (int)GuitarSettingsEnum.Chords).FirstOrDefault().Value.Contains('|'))
-            //{
-            //    string[] _accords = tab.InstrumentSettings.Where(x => x.Code == (int)GuitarSettingsEnum.Chords).FirstOrDefault().Value.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-            //    if (_accords != null && _accords.Count() > 0)
-            //        foreach (string s in _accords)
-            //            ret.Chords.Add(s);
-            //    _accords = null;
-            //}
+
             if (tab.Instrument.ConfigurationSections.Where(x => x.Code == (int)GuitarConfiguationSectionEnum.Settings).FirstOrDefault() != null && tab.Instrument.ConfigurationSections.Where(x => x.Code == (int)GuitarConfiguationSectionEnum.Settings).FirstOrDefault().Settings != null && tab.Instrument.ConfigurationSections.Where(x => x.Code == (int)GuitarConfiguationSectionEnum.Settings).FirstOrDefault().Settings.Count() > 0)
             {
                 if (tab.Instrument.ConfigurationSections.Where(x => x.Code == (int)GuitarConfiguationSectionEnum.Settings).FirstOrDefault().Settings.Where(x => x.Code == (int)GuitarSettingsEnum.Capodastre).FirstOrDefault() != null)
@@ -87,8 +152,14 @@ namespace Tablator.BusinessModel.Tablature
             }
 
             ret.PartSections = new List<PartSectionModel>();
-            foreach (DomainModel.PartSection sec in tab.PartSections)
-                ret.PartSections.Add(new PartSectionModel(sec));
+            if (tab.PartSections != null && tab.PartSections.Count() > 0)
+                foreach (DomainModel.PartSection sec in tab.PartSections)
+                    ret.PartSections.Add(new PartSectionModel(sec));
+
+            // Lyrics stuff
+
+            if (tab.Lyrics != null)
+                ret.Lyrics = new LyricsModel(tab.Lyrics);
 
             return ret;
         }

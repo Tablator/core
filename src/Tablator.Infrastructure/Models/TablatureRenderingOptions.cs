@@ -31,6 +31,8 @@
         /// </summary>
         public bool? AffichageEnchainementDetaille { get; set; } = null;
 
+        public bool DisplayLyrics { get; set; } = true;
+
         /// <summary>
         /// Largeur du document
         /// </summary>

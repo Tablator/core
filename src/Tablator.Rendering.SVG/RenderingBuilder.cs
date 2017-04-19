@@ -105,13 +105,12 @@
                         string _SVGContent = SVGContent;
                         guitarRenderingBuilder.TryBuild(ref _SVGContent);
                         SVGContent = _SVGContent;
-
                         break;
                     default:
                         throw new NotImplementedException();
                 }
 
-
+                //
 
                 outputContent = SVGContent;
                 return TabGenerationStatus.Succeed;
@@ -232,6 +231,110 @@
                     cursorWith = 0;
                 }
 
+                // Lyrics
+
+                if (Options.DisplayLyrics && Tablature.Lyrics != null && Tablature.Lyrics.Parts != null && Tablature.Lyrics.Parts.Count() > 0)
+                {
+                    cursorWith = 0;
+
+                    foreach (LyricsPartModel lp in Tablature.Lyrics.Parts)
+                    {
+                        // On affiche le titre de la partie
+
+                        cursorHeight += 30;
+                        SVGContent += "<text x=\"0\"  y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"15\">" + Tablature.GetPartName(lp.PartId, Options.Culture) + "</text>";
+                        cursorHeight += 10;
+                        svgHeight += 50;
+
+
+                        // On affiche les phrases
+
+                        int _i = 0;
+                        List<Tuple<string, List<LyricsSentenceChordModel>>> _phrases = new List<Tuple<string, List<LyricsSentenceChordModel>>>();
+
+                        foreach (LyricsSentenceModel lsm in lp.Sentences)
+                        {
+                            _i += 1;
+                            string _paroles = string.Empty, _accords = string.Empty;
+
+                            _phrases.Add(new Tuple<string, List<LyricsSentenceChordModel>>(lsm.Sentence, lsm.Chords));
+
+                            if (_i < Tablature.Lyrics.Phrase)
+                                continue;
+
+                            // On prépare l'affichage des paroles
+
+                            string _s = null;
+                            for (int __i = 0; __i < _phrases.Count; __i++)
+                            {
+                                _s += _phrases[__i].Item1;
+                                if (__i + 1 < _phrases.Count)
+                                    _s += " ";
+                            }
+                            _paroles = _s;
+
+                            // On prépare l'affichage des accords
+
+                            string _s1 = null;
+                            for (int __i = 0; __i < _phrases.Count; __i++)
+                            {
+                                string[] _arr = _phrases[__i].Item1.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                for (int i = 0; i < _arr.Length; i++)
+                                {
+                                    if (_phrases[__i].Item2.Where(x => x.Position == i+1).FirstOrDefault() != null)
+                                    {
+                                        for (int _i3 = 0; _i3 < (_arr[i].Length - _phrases[__i].Item2.Where(x => x.Position == i + 1).FirstOrDefault().Chord.Length) / 2; _i3++)
+                                            _s1 += " ";
+                                        _s1 += _phrases[__i].Item2.Where(x => x.Position == i+1).FirstOrDefault().Chord;
+                                        for (int _i3 = 0; _i3 < (_arr[i].Length - _phrases[__i].Item2.Where(x => x.Position == i + 1).FirstOrDefault().Chord.Length) / 2; _i3++)
+                                            _s1 += " ";
+                                    }
+                                    else
+                                    {
+                                        if (!string.IsNullOrWhiteSpace(_arr[i]))
+                                        {
+                                            string ____s = _arr[i];
+                                            if (____s.Contains("&"))
+                                                ____s = ____s.Replace("&eacute;", "e").Replace("&egrav;", "e").Replace("&agrav;", "a").Replace("&ecirc;", "e").Replace("&icirc;", "i").Replace("&amp;", "&");
+                                            for (int _i3 = 0; _i3 < ____s.Length; _i3++)
+                                                _s1 += " "; // On rajoute un espace par nombre de caractères
+                                            _s1 += " "; // On rajoute l'espace entre deux mots
+                                            ____s = null;
+                                        }
+                                    }
+                                }
+
+                                _arr = null;
+                            }
+                            _accords = _s1;
+
+                            // On affiche les accords
+
+                            cursorHeight += 30;
+                            SVGContent += "<text x=\"0\"  y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"15\"  xml:space=\"preserve\">" + _accords + "</text>";
+                            svgHeight += 50;
+                            cursorHeight += 10;
+
+                            // On affiche les paroles
+
+                            cursorHeight += 30;
+                            SVGContent += "<text x=\"0\"  y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"15\">" + _paroles + "</text>";
+                            svgHeight += 50;
+                            cursorHeight += 10;
+
+                            // 
+
+                            _s = null;
+                            _i = 0;
+                            _paroles = null;
+                            _accords = null;
+                            _phrases = new List<Tuple<string, List<LyricsSentenceChordModel>>>();
+                        }
+
+                        _phrases = null;
+                    }
+                }
+
                 // contenu tab
 
                 cursorWith = 0;
@@ -248,6 +351,7 @@
                     }
 
                     // On crée une ligne vide de tab
+
                     CreateNewLine();
 
                     // Et on mets les notes
@@ -262,11 +366,6 @@
                         {
                             foreach (PartSectionMesureTempsItemModel s in tmp.Sons)
                             {
-                                //if (s.Type == TypeSonEnum.Note)
-                                //    CreateNote(s.Corde, s.Position);
-                                //else if (s.Type == TypeSonEnum.Accord)
-                                //    CreateChord(s.Chord, s.SensGrattageCode);
-
                                 if (Convert.ToInt32(s.Pprts.Where(x => x.Code == (int)GuitarPropertyEnum.Type).First().Value) == (int)TypeSonEnum.Note)
                                     CreateNote(Convert.ToInt32(s.Pprts.Where(x => x.Code == (int)GuitarPropertyEnum.Corde).First().Value), Convert.ToInt32(s.Pprts.Where(x => x.Code == (int)GuitarPropertyEnum.Position).First().Value));
                                 else
@@ -317,164 +416,6 @@
                 SVGContent = null;
             }
         }
-
-        //public TabGenerationStatus BuildOutputContent(IInstrumentTablature tab, TablatureRenderingOptions options, out string outputContent)
-        //{
-        //    outputContent = null;
-        //    Tablature = (GuitarTablatureModel)tab;
-        //    Options = options;
-
-        //    try
-        //    {
-        //        // Build common part of the document (title, ...)
-
-        //        if (!string.IsNullOrWhiteSpace(Tablature.SongName))
-        //        {
-        //            cursorHeight += 8;
-        //            svgHeight += 8;
-        //            SVGContent += "<text x=\"50%\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"30\" text-anchor=\"middle\">" + Tablature.SongName + "</text>";
-        //            cursorHeight += 30;
-        //            svgHeight += 30;
-        //        }
-
-        //        if (!string.IsNullOrWhiteSpace(Tablature.ArtistName))
-        //        {
-        //            cursorHeight += 5;
-        //            svgHeight += 5;
-        //            SVGContent += "<text x=\"50%\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"15\" text-anchor=\"middle\" font-style=\"italic\">" + Tablature.ArtistName + "</text>";
-        //            cursorHeight += 15;
-        //            svgHeight += 15;
-        //        }
-
-        //        if (Tablature.Tempo.HasValue && Tablature.Tempo.Value > 0)
-        //        {
-        //            cursorHeight += 5;
-        //            svgHeight += 5;
-        //            SVGContent += "<text x=\"0\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"12\" text-anchor=\"left\">Tempo: " + Tablature.Tempo.Value + "</text>";
-        //            cursorHeight += 15;
-        //            svgHeight += 15;
-        //        }
-
-        //        if (Options.DisplayEnchainement && Tablature.Structure != null && Tablature.Structure.Count > 0)
-        //        {
-        //            cursorHeight += 5;
-        //            svgHeight += 5;
-
-        //            if (!Options.AffichageEnchainementDetaille.HasValue || !Options.AffichageEnchainementDetaille.Value)
-        //            {
-        //                // Affichage simple
-        //                SVGContent += "<text x=\"0\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"12\" text-anchor=\"left\">Enchaînement: ";
-        //                foreach (StructureSectionModel ei in Tablature.Structure)
-        //                {
-        //                    SVGContent += "(" + Tablature.GetPartName(ei.PartId, Options.Culture) + " x" + ei.Repeat + ") ";
-        //                }
-        //                SVGContent += "</text>";
-        //            }
-        //            else
-        //            {
-        //                // Affichage détaillé
-        //                SVGContent += "<text x=\"0\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"12\" text-anchor=\"left\">Enchaînement:</text>";
-        //                foreach (StructureSectionModel ei in Tablature.Structure)
-        //                {
-        //                    cursorHeight += 15;
-        //                    svgHeight += 15;
-        //                    SVGContent += "<text x=\"20\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"12\" text-anchor=\"left\">- " + Tablature.GetPartName(ei.PartId, Options.Culture) + " x" + ei.Repeat + "</text>";
-        //                }
-        //            }
-
-        //            cursorHeight += 15;
-        //            svgHeight += 15;
-        //        }
-
-        //        // Implement instrument stuff (only guitar for now)
-
-        //        // En-tête guitar settings
-
-        //        if (Tablature.Capodastre.HasValue && Tablature.Capodastre.Value > 0)
-        //        {
-        //            cursorHeight += 5;
-        //            svgHeight += 5;
-        //            SVGContent += "<text x=\"0\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"12\" text-anchor=\"left\">Capodastre: " + Tablature.Capodastre.Value + "</text>";
-        //            cursorHeight += 15;
-        //            svgHeight += 15;
-        //        }
-
-        //        if (!string.IsNullOrWhiteSpace(Tablature.Tuning))
-        //        {
-        //            cursorHeight += 5;
-        //            svgHeight += 5;
-        //            SVGContent += "<text x=\"0\" y=\"" + cursorHeight + "\" font-family=\"" + Options.Typeface + "\" font-size=\"12\" text-anchor=\"left\">Tuning: " + Tablature.Tuning + "</text>";
-        //            cursorHeight += 15;
-        //            svgHeight += 15;
-        //        }
-
-        //        // en-tête accords utilisés
-
-        //        if (Options.DisplayChordsHeader && Tablature.Chords != null && Tablature.Chords.Count > 0)
-        //        {
-        //            cursorWith = 0;
-        //            cursorHeight += 10;
-        //            svgHeight += 10;
-
-        //            GuitarChordRenderingBuilder chordBuilder = new GuitarChordRenderingBuilder();
-
-        //            int i = 0;
-        //            foreach (string s in Tablature.Chords)
-        //            {
-        //                cursorWith += 5;
-
-        //                if (i == 0)
-        //                {
-        //                    // New line
-        //                }
-
-        //                string chordSVG = string.Empty;
-
-        //                if (chordBuilder.DrawChord(Tablature.Chords[i], out chordSVG, cursorWidth: cursorWith, cursorHeight: cursorHeight))
-        //                    SVGContent += chordSVG;
-
-        //                cursorWith += chordBuilder.GetWidth() + 10;
-
-        //                chordSVG = null;
-
-        //                if ((Options.Width - cursorWith) < chordBuilder.GetWidth() + 10)
-        //                {
-        //                    // New Line
-
-        //                    i = 0;
-        //                    cursorHeight += chordBuilder.GetHeight();
-        //                    svgHeight += chordBuilder.GetHeight();
-        //                    cursorWith = 0;
-        //                }
-        //                else
-        //                {
-        //                    i++;
-        //                }
-        //            }
-
-        //            // On passe la ligne en cours
-
-        //            cursorHeight += chordBuilder.GetHeight();
-        //            svgHeight += chordBuilder.GetHeight();
-        //            cursorWith = 0;
-        //        }
-
-        //        //
-
-        //        outputContent = "<svg width=\"" + Options.Width + "\" height=\"" + (svgHeight + 20) + "\">" + SVGContent + "</svg>";
-        //        return TabGenerationStatus.Succeed;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return TabGenerationStatus.Failed;
-        //    }
-        //    finally
-        //    {
-        //        Options = null;
-        //        Tablature = null;
-        //        SVGContent = null;
-        //    }
-        //}
 
         private void CreateChord(string chord, int? sensGrattageCode)
         {
