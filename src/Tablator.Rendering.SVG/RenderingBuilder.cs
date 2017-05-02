@@ -262,44 +262,87 @@
                             if (_i < Tablature.Lyrics.Phrase)
                                 continue;
 
-                            // On prépare l'affichage des paroles
+                            //
 
                             string _s = null;
+                            string _s1 = null;
+
                             for (int __i = 0; __i < _phrases.Count; __i++)
                             {
-                                _s += _phrases[__i].Item1;
+                                // Specials tags:
+                                // [WS] = whitespace
+                                // [NCHR] = ancre pour une note.
+
+                                string[] _arr = _phrases[__i].Item1 != null ? _phrases[__i].Item1.Replace("[WS]", " ").Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : null;
+
+                                // On prépare l'affichage des paroles
+                                if (_phrases[__i].Item1 != null && _phrases[__i].Item1.Contains("[NCHR]"))
+                                {
+                                    for (int ___i = 0; ___i < _arr.Length; ___i++)
+                                    {
+                                        if (___i > 0)
+                                            _s += " ";
+
+                                        if (_arr[___i] != "[NCHR]")
+                                        {
+                                            _s += _arr[___i];
+                                            continue;
+                                        }
+
+                                        int ____i = 0;
+                                        while (____i < _phrases[__i].Item2.Where(x=>x.Position==___i+1).FirstOrDefault().Chord.Length)
+                                        {
+                                            _s += " ";
+                                            ____i += 1;
+                                        }
+                                    }
+                                }
+                                else
+                                    _s += _phrases[__i].Item1 != null ? _phrases[__i].Item1.Replace("[WS]", " ") : string.Empty;
+
                                 if (__i + 1 < _phrases.Count)
                                     _s += " ";
-                            }
-                            _paroles = _s;
 
-                            // On prépare l'affichage des accords
+                                _paroles = _s;
 
-                            string _s1 = null;
-                            for (int __i = 0; __i < _phrases.Count; __i++)
-                            {
-                                string[] _arr = _phrases[__i].Item1.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                                for (int i = 0; i < _arr.Length; i++)
+                                // On prépare l'affichage des accords
+
+                                if (_arr == null || _arr.Length == 0)
                                 {
-                                    if (_phrases[__i].Item2.Where(x => x.Position == i+1).FirstOrDefault() != null)
+                                    if (_phrases[__i].Item2 != null && _phrases[__i].Item2.Count > 0)
                                     {
-                                        for (int _i3 = 0; _i3 < (_arr[i].Length - _phrases[__i].Item2.Where(x => x.Position == i + 1).FirstOrDefault().Chord.Length) / 2; _i3++)
-                                            _s1 += " ";
-                                        _s1 += _phrases[__i].Item2.Where(x => x.Position == i+1).FirstOrDefault().Chord;
-                                        for (int _i3 = 0; _i3 < (_arr[i].Length - _phrases[__i].Item2.Where(x => x.Position == i + 1).FirstOrDefault().Chord.Length) / 2; _i3++)
-                                            _s1 += " ";
-                                    }
-                                    else
-                                    {
-                                        if (!string.IsNullOrWhiteSpace(_arr[i]))
+                                        for (int i = 0; i < _phrases[__i].Item2.Count; i++)
                                         {
-                                            string ____s = _arr[i];
-                                            if (____s.Contains("&"))
-                                                ____s = ____s.Replace("&eacute;", "e").Replace("&egrav;", "e").Replace("&agrav;", "a").Replace("&ecirc;", "e").Replace("&icirc;", "i").Replace("&amp;", "&");
-                                            for (int _i3 = 0; _i3 < ____s.Length; _i3++)
-                                                _s1 += " "; // On rajoute un espace par nombre de caractères
-                                            _s1 += " "; // On rajoute l'espace entre deux mots
-                                            ____s = null;
+                                            if (i > 0)
+                                                _s1 += "  ";
+                                            _s1 += _phrases[__i].Item2.OrderBy(x => x.Position).ElementAt(i).Chord;
+                                        }
+                                    }
+                                }
+                                else if (_arr.Length > 0)
+                                {
+                                    for (int i = 0; i < _arr.Length; i++)
+                                    {
+                                        if (_phrases[__i].Item2.Where(x => x.Position == i + 1).FirstOrDefault() != null)
+                                        {
+                                            for (int _i3 = 0; _i3 < (_arr[i].Length - _phrases[__i].Item2.Where(x => x.Position == i + 1).FirstOrDefault().Chord.Length) / 2; _i3++)
+                                                _s1 += " ";
+                                            _s1 += _phrases[__i].Item2.Where(x => x.Position == i + 1).FirstOrDefault().Chord;
+                                            for (int _i3 = 0; _i3 < (_arr[i].Length - _phrases[__i].Item2.Where(x => x.Position == i + 1).FirstOrDefault().Chord.Length) / 2; _i3++)
+                                                _s1 += " ";
+                                        }
+                                        else
+                                        {
+                                            if (!string.IsNullOrWhiteSpace(_arr[i]))
+                                            {
+                                                string ____s = _arr[i];
+                                                if (____s.Contains("&"))
+                                                    ____s = ____s.Replace("&eacute;", "e").Replace("&egrav;", "e").Replace("&agrav;", "a").Replace("&ecirc;", "e").Replace("&icirc;", "i").Replace("&amp;", "&");
+                                                for (int _i3 = 0; _i3 < ____s.Length; _i3++)
+                                                    _s1 += " "; // On rajoute un espace par nombre de caractères
+                                                _s1 += " "; // On rajoute l'espace entre deux mots
+                                                ____s = null;
+                                            }
                                         }
                                     }
                                 }
@@ -597,6 +640,7 @@
                 //}
                 //TODO here : remove switch du dessus et aller chercher l'enum dynamiquement
                 AddFingersPositions(EnumerationExtensions.GetValueFromDisplayShortName<GuitarChordEnum>(chord).GetDisplayDescription(), cursorWidth, cursorHeight);
+                //TODO here: remove the enum to a file system
 
                 svg = SVGContent;
                 return true;
