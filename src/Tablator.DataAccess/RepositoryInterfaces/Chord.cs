@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Tablator.BusinessLogic.Services
+namespace Tablator.DataAccess.Repositories
 {
-    public interface IChordService
+    public interface IChordRepository
     {
         T Get<T>(string name);
     }

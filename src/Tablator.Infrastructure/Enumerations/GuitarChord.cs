@@ -25,4 +25,15 @@
         [Display(Name = "C5", Description = "|3|5|5|||0", ShortName = "C5", GroupName = "C")]
         C5
     }
+
+    public enum GuitarChordAttributeEnum
+    {
+        Name = 1,
+        ShortName = 2
+    }
+
+    public enum GuitarChordCompositionAttributeEnum
+    {
+        Composition = 1
+    }
 }

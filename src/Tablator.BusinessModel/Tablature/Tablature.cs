@@ -108,8 +108,9 @@ namespace Tablator.BusinessModel.Tablature
     {
         public int? Capodastre { get; private set; }
         public string Tuning { get; private set; }
-        public string[] Chords { get; private set; }
         public GuitarTypeEnum GuitarType { get; private set; }
+        private string[] _Chords { get; set; }
+        public List<GuitarChordModel> Chords { get; private set; }
 
         public GuitarTablatureModel()
             : base()
@@ -148,7 +149,17 @@ namespace Tablator.BusinessModel.Tablature
                     ret.Tuning = tab.Instrument.ConfigurationSections.Where(x => x.Code == (int)GuitarConfiguationSectionEnum.Settings).FirstOrDefault().Settings.Where(x => x.Code == (int)GuitarSettingsEnum.Tuning).FirstOrDefault().Value;
 
                 if (tab.Instrument.ConfigurationSections.Where(x => x.Code == (int)GuitarConfiguationSectionEnum.Settings).FirstOrDefault().Settings.Where(x => x.Code == (int)GuitarSettingsEnum.Chords).FirstOrDefault() != null && tab.Instrument.ConfigurationSections.Where(x => x.Code == (int)GuitarConfiguationSectionEnum.Settings).FirstOrDefault().Settings.Where(x => x.Code == (int)GuitarSettingsEnum.Chords).FirstOrDefault().Value.Contains('|'))
-                    ret.Chords = tab.Instrument.ConfigurationSections.Where(x => x.Code == (int)GuitarConfiguationSectionEnum.Settings).FirstOrDefault().Settings.Where(x => x.Code == (int)GuitarSettingsEnum.Chords).FirstOrDefault().Value.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                    ret._Chords = tab.Instrument.ConfigurationSections.Where(x => x.Code == (int)GuitarConfiguationSectionEnum.Settings).FirstOrDefault().Settings.Where(x => x.Code == (int)GuitarSettingsEnum.Chords).FirstOrDefault().Value.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            }
+
+            // Chords stuff
+
+            if (ret._Chords != null && ret._Chords.Length > 0)
+            {
+                ret.Chords = new List<GuitarChordModel>();
+
+                foreach (string ch in ret._Chords)
+                    ret.Chords.Add()//TODO: fetch chord details by chordservice
             }
 
             ret.PartSections = new List<PartSectionModel>();

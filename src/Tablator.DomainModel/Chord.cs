@@ -6,28 +6,28 @@
     using Newtonsoft.Json;
 
     [JsonObject(MemberSerialization.OptIn)]
-    public class GuitarChord
+    public class Chord
     {
         [JsonProperty(PropertyName = "attrs")]
-        public IEnumerable<GuitarChordAttribute> Attributes { get; set; }
+        public IEnumerable<ChordAttribute> Attributes { get; set; }
 
         [JsonProperty(PropertyName = "compositions")]
-        public IEnumerable<GuitarChordComposition> Compositions { get; set; }
+        public IEnumerable<ChordComposition> Compositions { get; set; }
     }
 
     [JsonObject(MemberSerialization.OptIn)]
-    public class GuitarChordComposition
+    public class ChordComposition
     {
         [JsonProperty(PropertyName = "attrs")]
-        public IEnumerable<GuitarChordCompositionAttribute> Attributes { get; set; }
+        public IEnumerable<ChordCompositionAttribute> Attributes { get; set; }
     }
 
-    public class GuitarChordAttribute : BasePropertyItem
+    public class ChordAttribute : BasePropertyItem
     {
 
     }
 
-    public class GuitarChordCompositionAttribute : BasePropertyItem
+    public class ChordCompositionAttribute : BasePropertyItem
     {
 
     }
