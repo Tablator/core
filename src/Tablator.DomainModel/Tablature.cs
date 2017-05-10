@@ -150,4 +150,33 @@
         [JsonProperty(PropertyName = "c")]
         public string Chord { get; set; }
     }
+
+    /// <summary>
+    /// Declaration of a section the file contains
+    /// </summary>
+    [JsonObject(MemberSerialization.OptIn)]
+    public class SectionDeclaration
+    {
+        /// <summary>
+        /// Type of the section
+        /// </summary>
+        /// <remarks>
+        /// - references to SectionDeclarationTypeEnum
+        /// </remarks>
+        [JsonProperty(PropertyName = "type")]
+        public int Type { get; set; }
+
+        /// <summary>
+        /// Optional unique key to the section
+        /// </summary>
+        /// <example>For a language resource, it can be 'en' or 'fr'</example>
+        [JsonProperty(PropertyName = "key")]
+        public string Key { get; set; }
+
+        /// <summary>
+        /// Unique identifier of the section
+        /// </summary>
+        [JsonProperty(PropertyName = "id")]
+        public Guid Id { get; set; }
+    }
 }

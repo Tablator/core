@@ -1,7 +1,9 @@
 ﻿namespace Tablator.Infrastructure.Enumerations
 {
+    using System;
     using System.ComponentModel.DataAnnotations;
 
+    [Obsolete("Please use file storage chord system", false)]
     public enum GuitarChordEnum
     {
         [Display(Name = "A minor", Description = "|0|2|2|1|0|0", ShortName = "Am", GroupName = "A")]
@@ -16,6 +18,7 @@
         F
     }
 
+    [Obsolete("Please use file storage chord system", false)]
     public enum GuitarPowerChordEnum
     {
         [Display(Name = "B major", Description = "|2|4|4|||0", ShortName = "B", GroupName = "B")]
@@ -24,16 +27,5 @@
         D5,
         [Display(Name = "C5", Description = "|3|5|5|||0", ShortName = "C5", GroupName = "C")]
         C5
-    }
-
-    public enum GuitarChordAttributeEnum
-    {
-        Name = 1,
-        ShortName = 2
-    }
-
-    public enum GuitarChordCompositionAttributeEnum
-    {
-        Composition = 1
     }
 }

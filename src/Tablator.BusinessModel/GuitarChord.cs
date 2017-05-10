@@ -9,7 +9,11 @@ namespace Tablator.BusinessModel
         public IEnumerable<GuitarChordCompositionModel> Composition { get; private set; }
     }
 
-    public abstract class BaseChordModel
+    public sealed class TabGuitarChordModel : BaseChordModel
+    {public GuitarChordCompositionModel Composition { get; private set; }
+    }
+
+        public abstract class BaseChordModel
     {
         public string Name { get; private set; }
         public string ShortName { get; private set; }

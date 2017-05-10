@@ -101,7 +101,7 @@
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        private string GetTablatureFilePath(Guid id)
+        protected string GetTablatureFilePath(Guid id)
         {
             if (!File.Exists(Path.Combine(_root_Directory, id.ToString().Replace("-", null) + "." + _file_Extension)))
                 return null;
@@ -153,6 +153,39 @@
             {
                 filePath = null;
                 jo = null;
+            }
+        }
+
+        protected bool TryGetTablatureJson(Guid id, out string ret)
+        {
+            ret = null;
+
+            string filePath = null, json = null;
+
+            try
+            {
+                filePath = GetTablatureFilePath(id);
+
+                if (string.IsNullOrWhiteSpace(filePath))
+                    return false;
+
+                if (!TryGetFileContent(filePath, out json))
+                    return false;
+
+                if (string.IsNullOrWhiteSpace(json))
+                    return false;
+
+                ret = json;
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                filePath = null;
+                json = null;
             }
         }
 

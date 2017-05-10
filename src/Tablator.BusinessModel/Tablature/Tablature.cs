@@ -110,7 +110,7 @@ namespace Tablator.BusinessModel.Tablature
         public string Tuning { get; private set; }
         public GuitarTypeEnum GuitarType { get; private set; }
         private string[] _Chords { get; set; }
-        public List<GuitarChordModel> Chords { get; private set; }
+        public List<TabGuitarChordModel> Chords { get; private set; }
 
         public GuitarTablatureModel()
             : base()
@@ -156,10 +156,10 @@ namespace Tablator.BusinessModel.Tablature
 
             if (ret._Chords != null && ret._Chords.Length > 0)
             {
-                ret.Chords = new List<GuitarChordModel>();
+                ret.Chords = new List<TabGuitarChordModel>();
 
-                foreach (string ch in ret._Chords)
-                    ret.Chords.Add()//TODO: fetch chord details by chordservice
+                //foreach (string ch in ret._Chords)
+                    //ret.Chords.Add()//TODO: fetch chord details by chordservice
             }
 
             ret.PartSections = new List<PartSectionModel>();

@@ -9,6 +9,7 @@
     using System.Linq;
     using Tablator.Infrastructure.Constants;
     using Tablator.Infrastructure.Extensions;
+    using Tablator.BusinessModel;
 
     public sealed class RenderingBuilder : Tablator.Rendering.Core.ITablatureRenderingBuilder
     {
@@ -191,7 +192,7 @@
                     chordBuilder.Init(new GuitarChordRenderingOptions() { });
 
                     int i = 0;
-                    foreach (string s in Tablature.Chords)
+                    foreach (TabGuitarChordModel s in Tablature.Chords)
                     {
                         cursorWith += 5;
 
@@ -202,7 +203,7 @@
 
                         string chordSVG = string.Empty;
 
-                        if (chordBuilder.DrawChord(Tablature.Chords[i], out chordSVG, cursorWidth: cursorWith, cursorHeight: cursorHeight))
+                        if (chordBuilder.DrawChord(Tablature.Chords[i].Composition.Composition, out chordSVG, cursorWidth: cursorWith, cursorHeight: cursorHeight))
                             SVGContent += chordSVG;
 
                         cursorWith += chordBuilder.GetWidth() + 10;
