@@ -9,6 +9,7 @@
     using Infrastructure.Extensions;
     using DomainModel.Constants;
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     /// <summary>
     /// Base class to deal with Tablator file storage system
@@ -153,6 +154,39 @@
             {
                 filePath = null;
                 jo = null;
+            }
+        }
+
+        protected bool TryGetTablatureJObject(Guid id, out JObject ret)
+        {
+            ret = null;
+
+            string filePath = null;
+
+            try
+            {
+                filePath = GetTablatureFilePath(id);
+
+                if (string.IsNullOrWhiteSpace(filePath))
+                    return false;
+
+                using (StreamReader file = File.OpenText(filePath))
+                {
+                    using (JsonTextReader rdr = new JsonTextReader(file))
+                    {
+                        ret = (JObject)JToken.ReadFrom(rdr);
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                filePath = null;
             }
         }
 

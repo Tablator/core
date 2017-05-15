@@ -27,5 +27,21 @@
         /// <param name="id"></param>
         /// <returns></returns>
         IEnumerable<TablatureProperty> ListTablatureProperties(Guid id);
+
+        /// <summary>
+        /// WHAT?
+        /// WHY?
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="declarations"></param>
+        /// <returns></returns>
+        IEnumerable<SectionImplementation> ListSectionImplementations(Guid id, IEnumerable<SectionDeclaration> declarations);
+
+        /// <summary>
+        /// List all identifiers of the section implementations
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        IEnumerable<Guid> ListSectionImplementationIds(Guid id);
     }
 }

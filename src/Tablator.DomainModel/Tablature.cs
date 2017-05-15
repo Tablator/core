@@ -175,8 +175,45 @@
 
         /// <summary>
         /// Unique identifier of the section
+        /// Allow to get the good content
         /// </summary>
         [JsonProperty(PropertyName = "id")]
         public Guid Id { get; set; }
+    }
+
+    [JsonObject(MemberSerialization.OptIn)]
+    public class SectionImplementation
+    {
+        /// <summary>
+        /// Unique identifier of the section
+        /// Allow to join the content with the good declaration
+        /// </summary>
+        [JsonProperty(PropertyName = "id")]
+        public Guid Id { get; set; }
+
+        [JsonProperty(PropertyName = "content")]
+        public IEnumerable<ISectionContent> Content { get; set; }
+    }
+
+    public interface ISectionContent
+    {
+    }
+
+    public class BaseSectionContent: ISectionContent
+    {
+
+    }
+
+    [JsonObject(MemberSerialization.OptIn)]
+    public class LyricsAndChordsSectionContent : BaseSectionContent
+    {
+        [JsonProperty(PropertyName = "instrument_settings")]
+        public Guid? InstrumentSettings { get; set; }
+
+        [JsonProperty(PropertyName = "lng")]
+        public string Language { get; set; }
+
+        [JsonProperty(PropertyName = "thr")]
+        public string Author { get; set; }
     }
 }

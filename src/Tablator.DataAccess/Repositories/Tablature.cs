@@ -7,6 +7,9 @@
     using System.Threading.Tasks;
     using DomainModel;
     using Newtonsoft;
+    using System.Linq;
+    using Newtonsoft.Json.Linq;
+    using Tablator.Infrastructure.Enumerations.Tablature;
 
     /// <summary>
     /// Repository to deal with tablatures data
@@ -34,7 +37,7 @@
         public StorageFormatVersion GetTablatureStorageFormatVersion(Guid id)
         {
             string json;
-            Newtonsoft.Json.Linq.JToken token;
+            JToken token;
 
             try
             {
@@ -43,8 +46,8 @@
 
                 if (string.IsNullOrWhiteSpace(json))
                     return null;
-                
-                token = Newtonsoft.Json.Linq.JObject.Parse(json).SelectToken("frmtvrsn");
+
+                token = JObject.Parse(json).SelectToken("frmtvrsn");
                 if (token == null)
                     return null;
 
@@ -71,7 +74,7 @@
         public IEnumerable<TablatureProperty> ListTablatureProperties(Guid id)
         {
             string json;
-            IEnumerable<Newtonsoft.Json.Linq.JToken> tokens;
+            IEnumerable<JToken> tokens;
             IList<TablatureProperty> ret;
 
             try
@@ -82,13 +85,13 @@
                 if (string.IsNullOrWhiteSpace(json))
                     return null;
 
-                tokens = Newtonsoft.Json.Linq.JObject.Parse(json)["pprts"].Children();
+                tokens = JObject.Parse(json)["pprts"].Children();
                 if (tokens == null)
                     return null;
 
                 ret = new List<TablatureProperty>();
 
-                foreach(Newtonsoft.Json.Linq.JToken token in tokens)
+                foreach (Newtonsoft.Json.Linq.JToken token in tokens)
                     ret.Add(token.ToObject<TablatureProperty>());
 
                 return ret;
@@ -114,7 +117,7 @@
         public IEnumerable<SectionDeclaration> ListSectionDeclarations(Guid id)
         {
             string json;
-            IEnumerable<Newtonsoft.Json.Linq.JToken> tokens;
+            IEnumerable<JToken> tokens;
             IList<SectionDeclaration> ret;
 
             try
@@ -125,13 +128,13 @@
                 if (string.IsNullOrWhiteSpace(json))
                     return null;
 
-                tokens = Newtonsoft.Json.Linq.JObject.Parse(json)["dclrtns"].Children();
+                tokens = JObject.Parse(json)["dclrtns"].Children();
                 if (tokens == null)
                     return null;
 
                 ret = new List<SectionDeclaration>();
 
-                foreach (Newtonsoft.Json.Linq.JToken token in tokens)
+                foreach (JToken token in tokens)
                     ret.Add(token.ToObject<SectionDeclaration>());
 
                 return ret;
@@ -145,6 +148,124 @@
                 json = null;
                 tokens = null;
                 ret = null;
+            }
+        }
+
+        /// <summary>
+        /// WHAT?
+        /// WHY?
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="declarations"></param>
+        /// <returns></returns>
+        public IEnumerable<SectionImplementation> ListSectionImplementations(Guid id, IEnumerable<SectionDeclaration> declarations)
+        {
+            IEnumerable<JToken> tokens;
+            IList<SectionImplementation> ret;
+            JObject jo;
+
+            try
+            {
+                if (!TryGetTablatureJObject(id, out jo))
+                    throw new Exception();
+
+                tokens = jo.SelectTokens("sctns").Children();
+
+                ret = new List<SectionImplementation>();
+
+                foreach (JObject _token in tokens)
+                {
+                    SectionImplementation impl = new SectionImplementation();
+
+                    foreach (JProperty _jprop in _token.Properties())
+                    {
+                        if (_jprop.Name == "id")
+                        {
+                            impl.Id = _jprop.Value.ToObject<Guid>();
+                        }
+                        else if (_jprop.Name == "content")
+                        {
+                            List<ISectionContent> _implContent = new List<ISectionContent>();
+
+                            switch (declarations.Where(x => x.Id == impl.Id).Select(x => x.Type).First())
+                            {
+                                case (int)SectionDeclarationTypeEnum.InstrumentSettings:
+
+                                    break;
+                                case (int)SectionDeclarationTypeEnum.LyricsWithChords:
+                                    _implContent.AddRange(_jprop.Value.ToObject<IEnumerable<LyricsAndChordsSectionContent>>());
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            impl.Content = _implContent;
+
+                            _implContent = null;
+                        }
+                    }
+
+                    ret.Add(impl);
+
+                    impl = null;
+                }
+
+                return ret;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                tokens = null;
+                ret = null;
+                jo = null;
+            }
+        }
+
+        /// <summary>
+        /// List all identifiers of the section implementations
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public IEnumerable<Guid> ListSectionImplementationIds(Guid id)
+        {
+            JObject jo;
+            IEnumerable<JToken> tokens;
+            IList<Guid> ret;
+
+            try
+            {
+                if (!TryGetTablatureJObject(id, out jo))
+                    throw new Exception();
+
+                tokens = jo.SelectTokens("sctns").Children();
+
+                ret = new List<Guid>();
+
+                foreach (JObject _token in tokens)
+                {
+                    foreach (JProperty _jprop in _token.Properties())
+                    {
+                        if (_jprop.Name == "id")
+                        {
+                            ret.Add(_jprop.Value.ToObject<Guid>());
+                        }
+                    }
+                }
+
+                return ret;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                tokens = null;
+                ret = null;
+                jo = null;
             }
         }
     }
