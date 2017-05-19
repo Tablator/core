@@ -1,21 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Tablator.DomainModel;
+using Tablator.Infrastructure.DataAccess.Bases;
 
 namespace Tablator.DataAccess.Repositories
 {
-    public sealed class ChordRepository : IChordRepository
+    /// <summary>
+    /// Access to chord data
+    /// </summary>
+    public sealed class ChordRepository : ChordBaseFileRepository, IChordRepository
     {
-        private readonly string _rootDirectory;
+        public ChordRepository(string fileDirectoryPath)
+                : base(fileDirectoryPath)
+        { }
 
-        public ChordRepository(string catalogRootDirectory)
+        public Chord Get(Guid id)
         {
-            _rootDirectory = catalogRootDirectory;
-        }
+            if (!TryParseContent<Chord>(id, out Chord ret))
+                return null;
 
-        public T Get<T>(string name)
-        {
-            throw new NotImplementedException();
+            return ret;
         }
     }
 }

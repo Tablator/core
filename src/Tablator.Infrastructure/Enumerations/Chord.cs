@@ -7,7 +7,8 @@ namespace Tablator.Infrastructure.Enumerations.Chord
     public enum GuitarChordAttributeEnum
     {
         Name = 1,
-        ShortName = 2
+        ShortName = 2,
+        Instrument = 3
     }
 
     public enum GuitarChordCompositionAttributeEnum

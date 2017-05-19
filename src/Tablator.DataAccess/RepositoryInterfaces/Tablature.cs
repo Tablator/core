@@ -29,6 +29,14 @@
         IEnumerable<TablatureProperty> ListTablatureProperties(Guid id);
 
         /// <summary>
+        /// WHAT? List the declarations of the sections what the file contains
+        /// WHY? 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        IEnumerable<SectionDeclaration> ListSectionDeclarations(Guid id);
+
+        /// <summary>
         /// WHAT?
         /// WHY?
         /// </summary>

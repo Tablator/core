@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
 using Tablator.DataAccess.Repositories;
 using Tablator.DomainModel;
 using System.Linq;
@@ -12,6 +10,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Tablator.Core.UnitTests.DataAccessUT
 {
+    /// <summary>
+    /// Test access to a tablature data
+    /// </summary>
     [TestClass]
     public class TablatureRepositoryUnitTests
     {
@@ -52,7 +53,7 @@ namespace Tablator.Core.UnitTests.DataAccessUT
         [TestMethod]
         public void GetTabStorageFormatVersionTestMethod()
         {
-            TablatureRepository _repository;
+            ITablatureRepository _repository;
             StorageFormatVersion sfv;
 
             try
@@ -82,14 +83,14 @@ namespace Tablator.Core.UnitTests.DataAccessUT
         }
 
         /// <summary>
-        /// WHAT? 
+        /// WHAT? Check if the file has some required properties, like the name of the song
         /// WHY? 
         /// HOW? 
         /// </summary>
         [TestMethod]
-        public void GuitarTabPropertiesTestMethod()
+        public void TabPropertiesTestMethod()
         {
-            TablatureRepository _repository;
+            ITablatureRepository _repository;
             IEnumerable<TablatureProperty> _tabProperties;
 
             try
@@ -129,7 +130,7 @@ namespace Tablator.Core.UnitTests.DataAccessUT
         [TestMethod]
         public void TabSectionDeclarationsTestMethod()
         {
-            TablatureRepository _repository;
+            ITablatureRepository _repository;
             IEnumerable<SectionDeclaration> _tabSectionDeclarations;
 
             try
@@ -191,7 +192,7 @@ namespace Tablator.Core.UnitTests.DataAccessUT
         [TestMethod]
         public void TabSectionImplementationsTestMethod()
         {
-            TablatureRepository _repository;
+            ITablatureRepository _repository;
             IEnumerable<SectionDeclaration> _tabSectionDeclarations;
             IEnumerable<SectionImplementation> sectionImplementations;
 
@@ -228,7 +229,7 @@ namespace Tablator.Core.UnitTests.DataAccessUT
         [TestMethod]
         public void TabSectionDeclarationAndImplementationsTestMethod()
         {
-            TablatureRepository _repository;
+            ITablatureRepository _repository;
             IEnumerable<Guid> implementationIds;
             IEnumerable<SectionDeclaration> _tabSectionDeclarations;
 

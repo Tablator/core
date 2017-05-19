@@ -14,16 +14,15 @@
     /// <summary>
     /// Repository to deal with tablatures data
     /// </summary>
-    public sealed class TablatureRepository : BaseFileRepository, ITablatureRepository
+    public sealed class TablatureRepository : TablatureBaseFileRepository, ITablatureRepository
     {
-        public TablatureRepository(string catalogRootDirectory)
-               : base(catalogRootDirectory)
+        public TablatureRepository(string fileDirectoryPath)
+               : base(fileDirectoryPath)
         { }
 
         public Tablature Get(Guid id)
         {
-            Tablature ret = null;
-            if (!TryParseTablatureFileContent<Tablature>(id, out ret))
+            if (!TryParseContent<Tablature>(id, out Tablature ret))
                 return null;
 
             return ret;
@@ -41,7 +40,7 @@
 
             try
             {
-                if (!TryGetTablatureJson(id, out json))
+                if (!TryGetJson(id, out json))
                     throw new Exception();
 
                 if (string.IsNullOrWhiteSpace(json))
@@ -79,7 +78,7 @@
 
             try
             {
-                if (!TryGetTablatureJson(id, out json))
+                if (!TryGetJson(id, out json))
                     throw new Exception();
 
                 if (string.IsNullOrWhiteSpace(json))
@@ -91,7 +90,7 @@
 
                 ret = new List<TablatureProperty>();
 
-                foreach (Newtonsoft.Json.Linq.JToken token in tokens)
+                foreach (JToken token in tokens)
                     ret.Add(token.ToObject<TablatureProperty>());
 
                 return ret;
@@ -122,7 +121,7 @@
 
             try
             {
-                if (!TryGetTablatureJson(id, out json))
+                if (!TryGetJson(id, out json))
                     throw new Exception();
 
                 if (string.IsNullOrWhiteSpace(json))
@@ -166,7 +165,7 @@
 
             try
             {
-                if (!TryGetTablatureJObject(id, out jo))
+                if (!TryGetJObject(id, out jo))
                     throw new Exception();
 
                 tokens = jo.SelectTokens("sctns").Children();
@@ -237,7 +236,7 @@
 
             try
             {
-                if (!TryGetTablatureJObject(id, out jo))
+                if (!TryGetJObject(id, out jo))
                     throw new Exception();
 
                 tokens = jo.SelectTokens("sctns").Children();

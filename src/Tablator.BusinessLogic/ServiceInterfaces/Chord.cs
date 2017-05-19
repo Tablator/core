@@ -6,6 +6,6 @@ namespace Tablator.BusinessLogic.Services
 {
     public interface IChordService
     {
-        T Get<T>(string name);
+        
     }
 }

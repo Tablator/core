@@ -14,6 +14,6 @@ namespace Tablator.BusinessLogic.Services
             _repository = repository;
         }
 
-        public T Get<T>(string name) => _repository.Get<T>(name);
+        
     }
 }

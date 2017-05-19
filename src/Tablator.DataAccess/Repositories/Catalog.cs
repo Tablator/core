@@ -13,7 +13,7 @@
     /// <summary>
     /// Repository to deal with catalog data
     /// </summary>
-    public sealed class CatalogRepository : BaseFileRepository, ICatalogRepository
+    public sealed class CatalogRepository : CatalogBaseFileRepository, ICatalogRepository
     {
         public CatalogRepository(string catalogRootDirectory)
                : base(catalogRootDirectory)
@@ -23,7 +23,7 @@
         {
             CatalogHierarchyCollectionLevel ret = null;
 
-            if (!TryParseFileContent<CatalogHierarchyCollectionLevel>(StorageFileEnum.CatalogHierarchy, out ret))
+            if (!TryParseContent<CatalogHierarchyCollectionLevel>(StorageFileEnum.CatalogHierarchy, out ret))
                 return null;
 
             return ret;
@@ -37,7 +37,7 @@
         public async Task<Guid?> GetTablatureId(string urlPath)
         {
             CatalogHierarchyTabReferenceCollection refs = null;
-            if (!TryParseFileContent<CatalogHierarchyTabReferenceCollection>(StorageFileEnum.CatalogReference, out refs))
+            if (!TryParseContent<CatalogHierarchyTabReferenceCollection>(StorageFileEnum.CatalogReference, out refs))
                 return null;
 
             if (refs == null)
@@ -56,7 +56,7 @@
         {
             CatalogHierarchyTabReferenceCollection ret = null;
 
-            if (!TryParseFileContent<CatalogHierarchyTabReferenceCollection>(StorageFileEnum.CatalogReference, out ret))
+            if (!TryParseContent<CatalogHierarchyTabReferenceCollection>(StorageFileEnum.CatalogReference, out ret))
                 return null;
 
             return ret;
