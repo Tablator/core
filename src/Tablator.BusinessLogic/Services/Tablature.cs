@@ -7,7 +7,7 @@
     using System.Threading.Tasks;
     using BusinessModel;
     using Infrastructure.Enumerations;
-    using Tablator.BusinessLogic.DataMappers;
+    using Tablator.BusinessModel.Builders;
 
     public sealed class TablatureService : ITablatureService
     {
@@ -35,7 +35,8 @@
 
         public TablatureModel Get(Guid id)
         {
-            return TablatureDataMapper.Map(_repository.Get(id));
+            TablatureBuilder builder = new TablatureBuilder(_repository.Get(id));
+            return builder.Build();
         }
     }
 }

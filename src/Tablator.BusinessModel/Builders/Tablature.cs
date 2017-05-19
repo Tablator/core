@@ -9,6 +9,7 @@ namespace Tablator.BusinessModel.Builders
     public sealed class TablatureBuilder
     {
         private BusinessModel.TablatureModel _tablature { get; set; }
+
         private DomainModel.Tablature _source { get; set; }
 
         public TablatureBuilder(DomainModel.Tablature tab)
@@ -18,10 +19,15 @@ namespace Tablator.BusinessModel.Builders
 
         public BusinessModel.TablatureModel Build()
         {
+            _tablature = new BusinessModel.TablatureModel();
+
             PopulateProperties();
 
+            Clean();
             return _tablature;
         }
+
+        private void Clean() => _source = null;
 
         private void PopulateProperties()
         {
