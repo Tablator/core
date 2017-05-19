@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CoreUnitTests\" />
-    <Folder Include="SVGUnitTests\" />
+    <Folder Include="CoreUT\" />
+    <Folder Include="SVGUT\" />
   </ItemGroup>
 
   <ItemGroup>

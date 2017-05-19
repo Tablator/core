@@ -37,12 +37,12 @@
             if (string.IsNullOrEmpty(urlPath))
                 throw new ArgumentNullException(nameof(urlPath));
 
-            return await _repository.GetTablatureId(urlPath);
+            return  _repository.GetTablatureId(urlPath);
         }
 
         public async Task<HierarchyTabReferenceCollectionModel> ListReferences()
         {
-           return new HierarchyTabReferenceCollectionModel(await _repository.ListReferences());
+           return new HierarchyTabReferenceCollectionModel( _repository.ListReferences());
         }
     }
 }

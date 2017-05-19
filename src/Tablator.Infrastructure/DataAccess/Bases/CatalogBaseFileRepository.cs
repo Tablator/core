@@ -17,7 +17,7 @@
         {
 
         }
-        
+
         /// <summary>
         /// Exhaustive list of storage files
         /// </summary>
@@ -36,18 +36,18 @@
         /// <remarks>Checks if the file exists. If not, returns null.</remarks>
         private string GetCatalogHierarchyPath()
         {
-            if (!File.Exists(Path.Combine(_root_Directory, StorageFileEnum.CatalogHierarchy.GetDisplayDescription())))
+            if (!File.Exists(Path.Combine(_root_Directory, StorageFileEnum.CatalogHierarchy.GetDisplayDescription() + "." + _file_Extension)))
                 return null;
 
-            return Path.Combine(_root_Directory, StorageFileEnum.CatalogHierarchy.GetDisplayDescription());
+            return Path.Combine(_root_Directory, StorageFileEnum.CatalogHierarchy.GetDisplayDescription() + "." + _file_Extension);
         }
 
         private string GetCatalogReferencePath()
         {
-            if (!File.Exists(Path.Combine(_root_Directory, StorageFileEnum.CatalogReference.GetDisplayDescription())))
+            if (!File.Exists(Path.Combine(_root_Directory, StorageFileEnum.CatalogReference.GetDisplayDescription() + "." + _file_Extension)))
                 return null;
 
-            return Path.Combine(_root_Directory, StorageFileEnum.CatalogReference.GetDisplayDescription());
+            return Path.Combine(_root_Directory, StorageFileEnum.CatalogReference.GetDisplayDescription() + "." + _file_Extension);
         }
 
         private string GetFilePath(StorageFileEnum file)

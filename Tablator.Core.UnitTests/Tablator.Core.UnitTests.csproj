@@ -11,10 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DataAccessUnitTests\" />
-    <Folder Include="DomainModelUnitTests\" />
     <Folder Include="InfrastructureUT\" />
     <Folder Include="DomainModelUT\" />
+    <Folder Include="BusinessModelUT\" />
   </ItemGroup>
 
   <ItemGroup>

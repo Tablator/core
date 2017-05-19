@@ -21,9 +21,7 @@
 
         public CatalogHierarchyCollectionLevel ListHierarchyLevels()
         {
-            CatalogHierarchyCollectionLevel ret = null;
-
-            if (!TryParseContent<CatalogHierarchyCollectionLevel>(StorageFileEnum.CatalogHierarchy, out ret))
+            if (!TryParseContent<CatalogHierarchyCollectionLevel>(StorageFileEnum.CatalogHierarchy, out CatalogHierarchyCollectionLevel ret))
                 return null;
 
             return ret;
@@ -34,10 +32,9 @@
         /// </summary>
         /// <param name="urlPath">chemin d'accès url de la tab (ex=> "guitar-tab-francis-cabrel-jelaimeamourir")</param>
         /// <returns>identifiant de la tablature ou null</returns>
-        public async Task<Guid?> GetTablatureId(string urlPath)
+        public Guid? GetTablatureId(string urlPath)
         {
-            CatalogHierarchyTabReferenceCollection refs = null;
-            if (!TryParseContent<CatalogHierarchyTabReferenceCollection>(StorageFileEnum.CatalogReference, out refs))
+            if (!TryParseContent<CatalogHierarchyTabReferenceCollection>(StorageFileEnum.CatalogReference, out CatalogHierarchyTabReferenceCollection refs))
                 return null;
 
             if (refs == null)
@@ -52,11 +49,9 @@
             return refs.Refs.Where(x => x.UrlPath.ToLower() == urlPath.ToLower()).Select(x => x.Id).FirstOrDefault();
         }
 
-        public async Task<CatalogHierarchyTabReferenceCollection> ListReferences()
+        public CatalogHierarchyTabReferenceCollection ListReferences()
         {
-            CatalogHierarchyTabReferenceCollection ret = null;
-
-            if (!TryParseContent<CatalogHierarchyTabReferenceCollection>(StorageFileEnum.CatalogReference, out ret))
+            if (!TryParseContent<CatalogHierarchyTabReferenceCollection>(StorageFileEnum.CatalogReference, out CatalogHierarchyTabReferenceCollection ret))
                 return null;
 
             return ret;
