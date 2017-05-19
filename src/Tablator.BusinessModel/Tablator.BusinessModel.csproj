@@ -9,4 +9,9 @@
     <ProjectReference Include="..\Tablator.Infrastructure\Tablator.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Chord\" />
+    <Folder Include="Catalog\" />
+  </ItemGroup>
+
 </Project>

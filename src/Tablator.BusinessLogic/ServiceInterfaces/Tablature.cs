@@ -3,11 +3,11 @@
     using System;
     using System.Collections.Generic;
     using System.Text;
-    using BusinessModel.Tablature;
+    using BusinessModel;
     using Infrastructure.Enumerations;
 
     public interface ITablatureService
     {
-        IInstrumentTablature Get(Guid id, InstrumentEnum instrument);
+        TablatureModel Get(Guid id);
     }
 }

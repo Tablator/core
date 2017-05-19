@@ -17,7 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\src\Tablator.BusinessLogic\Tablator.BusinessLogic.csproj" />
+    <ProjectReference Include="..\src\Tablator.BusinessModel\Tablator.BusinessModel.csproj" />
     <ProjectReference Include="..\src\Tablator.DataAccess\Tablator.DataAccess.csproj" />
+    <ProjectReference Include="..\src\Tablator.DomainModel\Tablator.DomainModel.csproj" />
+    <ProjectReference Include="..\src\Tablator.Infrastructure\Tablator.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
